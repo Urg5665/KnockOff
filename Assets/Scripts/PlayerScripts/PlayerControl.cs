@@ -143,6 +143,7 @@ public class PlayerControl : MonoBehaviour
             spellSecondary[i] = "AOE";
         }*/
 
+
         pickDirection();
         dashDirectionTime--;
         aoeWidth = (Vector3.Distance(player1Aim.transform.position, transform.position)) / 2;

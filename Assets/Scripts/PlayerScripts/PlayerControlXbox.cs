@@ -75,6 +75,9 @@ public class PlayerControlXbox : MonoBehaviour
 
     public int fireBallID;
     public int stunID; // So that players cannot be killed by smae fireball, and needs two differnt fire spells ( any direction) to kill
+    public int baseDashCooldown;
+    public Image onPlayerDashCooldownRing;
+    public bool baseDashing;
 
     void Start()
     {
@@ -92,7 +95,7 @@ public class PlayerControlXbox : MonoBehaviour
         castAfterDash = false;
         dashLength = 20;
         spellSelected = 0;
-
+        baseDashCooldown = 0;
         baseRange = 20;
         baseSpeed = 60;
         aoeRange = 18; /// 30
@@ -127,7 +130,6 @@ public class PlayerControlXbox : MonoBehaviour
         //float newFloat = Input.GetAxis("CardThrow");
         //Debug.Log("Left Trigger: " + Input.GetAxisRaw("CardThrow").ToString() + "  Right Tirgger: " + Input.GetAxisRaw("SpellThrow").ToString());
         //Debug.Log("NewFloat: " + newFloat);
-
         pickDirection();
         dashDirectionTime--;
         aoeWidth = (Vector3.Distance(player2Aim.transform.position, transform.position)) / 2;
@@ -162,6 +164,11 @@ public class PlayerControlXbox : MonoBehaviour
             this.GetComponent<Rigidbody>().AddForce(Vector3.left * 600);
             this.GetComponent<Rigidbody>().AddForce(Vector3.up * 400);
         }
+        if (baseDashCooldown > 0)
+        {
+            baseDashCooldown--;
+            onPlayerDashCooldownRing.fillAmount = ((float)baseDashCooldown / 200);
+        }
         if (!dashing)
         {
             playerUI.SetActive(true);
@@ -170,10 +177,6 @@ public class PlayerControlXbox : MonoBehaviour
 
         if (dashing)
         {
-            for (int i = 0; i < 4; i++)
-            {
-                canCast[i] = false;
-            }
             if (dashingTime == 0)
             {
                 speed = 7.5f;
@@ -226,6 +229,9 @@ public class PlayerControlXbox : MonoBehaviour
                 newSpell.GetComponent<FireBallThrow>().dashSpell = true;
                 fireBallID++;
                 newSpell.GetComponent<FireBallThrow>().fireBallID = fireBallID;
+                spellPrimary[dashDirection] = "";
+                spellSecondary[dashDirection] = "";
+                canCast[dashDirection] = true;
             }
             if (spellPrimary[dashDirection] == "Wind" && spellSecondary[dashDirection] == "Dash")
             {
@@ -234,6 +240,9 @@ public class PlayerControlXbox : MonoBehaviour
                 newSpell.GetComponent<WindWaveThrow>().spellNum = dashDirection;
                 newSpell.GetComponent<WindWaveThrow>().maxRange = dashSpellRange;
                 newSpell.GetComponent<WindWaveThrow>().dashSpell = true;
+                spellPrimary[dashDirection] = "";
+                spellSecondary[dashDirection] = "";
+                canCast[dashDirection] = true;
             }
             if (spellPrimary[dashDirection] == "Water" && spellSecondary[dashDirection] == "Dash")
             {
@@ -242,6 +251,9 @@ public class PlayerControlXbox : MonoBehaviour
                 newSpell.GetComponent<WaterPullThrow>().spellNum = dashDirection;
                 newSpell.GetComponent<WaterPullThrow>().maxRange = dashSpellRange;
                 newSpell.GetComponent<WaterPullThrow>().dashSpell = true;
+                spellPrimary[dashDirection] = "";
+                spellSecondary[dashDirection] = "";
+                canCast[dashDirection] = true;
             }
             if (spellPrimary[dashDirection] == "Earth" && spellSecondary[dashDirection] == "Dash")
             {
@@ -250,15 +262,41 @@ public class PlayerControlXbox : MonoBehaviour
                 newSpell.GetComponent<EarthQuakeThrow>().spellNum = dashDirection;
                 newSpell.GetComponent<EarthQuakeThrow>().maxRange = dashSpellRange * 2;
                 newSpell.GetComponent<EarthQuakeThrow>().dashSpell = true;
+                spellPrimary[dashDirection] = "";
+                spellSecondary[dashDirection] = "";
+                canCast[dashDirection] = true;
             }
-            spellPrimary[dashDirection] = "";
-            spellSecondary[dashDirection] = "";
-            canCast[dashDirection] = true;
+            for (int i = 0; i < 4; i++)
+            {
+                canCast[i] = true;
+            }
         }
         // Card Casting Commands
         // Input.GetAxis("CardThrow") == 1
         //Input.GetButton("CardThrow")
         //Input.GetAxis("SpellThrow") == 1
+        if (Input.GetButton("Fire1") == true && !dashing && baseDashCooldown <= 0) // Base Dash
+        {
+            castAfterDash = false;
+            baseDashCooldown = 200;
+            dashing = true;
+            dashDirection = spellSelected;
+            dashAim = new Vector3(player2Aim.transform.position.x, player2Aim.transform.position.y, player2Aim.transform.position.z);
+            dashDirectionTime = 75;
+            transform.LookAt(dashAim);
+            baseDashing = true;
+
+            if (this.transform.position.y < 2.5)
+            {
+                rb.AddForce(Vector3.up * waterDashForceUp);
+            }
+            else
+            {
+                rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
+            }
+
+            this.GetComponent<BoxCollider>().isTrigger = true;
+        }
         if (Input.GetAxis("CardThrow") == 1 && cardsThrown < 4 && canCast[spellSelected] && spellSecondary[spellSelected] == "" ) // Shoot Card
         {
             CardGather();
@@ -274,19 +312,19 @@ public class PlayerControlXbox : MonoBehaviour
         {
             //Debug.Log("No Spell Avaliable");
         }
-        if ((Input.GetAxis("SpellThrow") == 1 || Input.GetButton("Fire1") == true) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Fire" ) // Shoot Fireball
+        if ((Input.GetAxis("SpellThrow") == 1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Fire" ) // Shoot Fireball
         {
             Fireball();
         }
-        if ((Input.GetAxis("SpellThrow") == 1 || Input.GetButton("Fire1") == true) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Wind") // Shoot Wind Knock
+        if ((Input.GetAxis("SpellThrow") == 1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Wind") // Shoot Wind Knock
         {
             WindKnockback();
         }
-        if ((Input.GetAxis("SpellThrow") == 1 || Input.GetButton("Fire1") == true) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Water") // Shoot Wind Knock
+        if ((Input.GetAxis("SpellThrow") == 1 ) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Water") // Shoot Wind Knock
         {
             WaterPull();
         }
-        if ((Input.GetAxis("SpellThrow") == 1 || Input.GetButton("Fire1") == true) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Earth") // Shoot Wind Knock
+        if ((Input.GetAxis("SpellThrow") == 1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Earth") // Shoot Wind Knock
         {
             EarthQuake();
         }
@@ -788,6 +826,10 @@ public class PlayerControlXbox : MonoBehaviour
         rb.constraints = RigidbodyConstraints.FreezeRotation;
         this.transform.rotation = Quaternion.Euler(0, 45, 0);
         playerUI.SetActive(true);
-        castAfterDash = true;
+        if (!baseDashing)
+        {
+            castAfterDash = true;
+        }
+        baseDashing = false;
     }
 }
