@@ -37,6 +37,11 @@ public class PlayerControl : MonoBehaviour
     // Water Bomb, range
     // Earth Bomb , radial collapse
 
+    // for swaping directions around
+    public string[] tempSpellPrimary;
+    public string[] tempSpellSecondary;
+
+
     public GameObject card;
     public GameObject newCard;
     public GameObject cardTrail;
@@ -88,6 +93,10 @@ public class PlayerControl : MonoBehaviour
     public Image onPlayerDashCooldownRing;
     public bool baseDashing;
 
+    public int rotateSpellChannel;
+    public Image rotateSpellRing;
+
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.None;
@@ -102,6 +111,7 @@ public class PlayerControl : MonoBehaviour
         dashingTime = 0;
         castAfterDash = false;
         dashLength = 20;
+        rotateSpellChannel = 0;
 
         baseRange = 20;
         baseSpeed = 60;
@@ -272,7 +282,60 @@ public class PlayerControl : MonoBehaviour
 
 
         }
-        if (Input.GetMouseButtonDown(2) && !dashing && baseDashCooldown <= 0) // Base Dash
+        rotateSpellRing.fillAmount = (float)rotateSpellChannel / 30;
+        if (Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.E)) // Switch Spells 
+        {
+            speed = 0.0f;
+            for (int i = 0; i < 4; i++)
+            {
+                canCast[i] = false;
+            }
+            rotateSpellChannel++;
+            Debug.Log(rotateSpellChannel);
+            if (rotateSpellChannel == 30 && Input.GetKey(KeyCode.Q))
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    tempSpellPrimary[i] = spellPrimary[i];
+                    tempSpellSecondary[i] = spellSecondary[i];
+                }
+                for (int i = 0; i < 3; i++)
+                {
+                    spellPrimary[i] = tempSpellPrimary[i + 1];
+                    spellSecondary[i] = tempSpellSecondary[i + 1];
+                }
+                spellPrimary[3] = tempSpellPrimary[0];
+                spellSecondary[3] = tempSpellSecondary[0];
+            }
+            if (rotateSpellChannel == 30 && Input.GetKey(KeyCode.E))
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    tempSpellPrimary[i] = spellPrimary[i];
+                    tempSpellSecondary[i] = spellSecondary[i];
+                }
+                for (int i = 0; i < 3; i++)
+                {
+                    spellPrimary[i + 1] = tempSpellPrimary[i];
+                    spellSecondary[i + 1] = tempSpellSecondary[i];
+                }
+                spellPrimary[0] = tempSpellPrimary[3];
+                spellSecondary[0] = tempSpellSecondary[3];
+            }
+
+        }
+        else
+        {
+            rotateSpellChannel = 0;
+            rotateSpellRing.fillAmount = 0;
+            speed = 7.5f;
+            for (int i = 0; i < 4; i++)
+            {
+                canCast[i] = true;
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && !dashing && baseDashCooldown <= 0) // Base Dash
         {
             castAfterDash = false;
             baseDashCooldown = 200;

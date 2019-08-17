@@ -113,6 +113,7 @@ RectTransform:
   - {fileID: 4017913382014216252}
   - {fileID: 8941140668277223203}
   - {fileID: 1806060109347475975}
+  - {fileID: 6311237299059648094}
   m_Father: {fileID: 4589685495232286487}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 90, y: -45.000004, z: 0}
@@ -5073,6 +5074,80 @@ MonoBehaviour:
   playerMesh: {fileID: 0}
   playerAim: {fileID: 1958647856}
   player: {fileID: 0}
+--- !u!1 &1445339296803186190
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6311237299059648094}
+  - component: {fileID: 8380048080225737797}
+  - component: {fileID: 4132671006792823937}
+  m_Layer: 0
+  m_Name: SwapSliders
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6311237299059648094
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1445339296803186190}
+  m_LocalRotation: {x: -0, y: -0, z: -0.0017504389, w: -0.99999845}
+  m_LocalPosition: {x: 0, y: 0, z: -2.661639}
+  m_LocalScale: {x: 4, y: 4, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1016335770}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -0.0000047683716, y: -20.291529}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &8380048080225737797
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1445339296803186190}
+  m_CullTransparentMesh: 0
+--- !u!114 &4132671006792823937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1445339296803186190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0.1901753, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_Sprite: {fileID: 21300000, guid: e305701844dc07448ab93dbc630d4e94, type: 3}
+  m_Type: 3
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 0
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
 --- !u!1 &1508013554744897157
 GameObject:
   m_ObjectHideFlags: 0
@@ -5833,6 +5908,8 @@ MonoBehaviour:
   - 
   - 
   - 
+  tempSpellPrimary: []
+  tempSpellSecondary: []
   card: {fileID: 5503366003343464759, guid: 189f974136601e24a9bd0cbde212644c, type: 3}
   newCard: {fileID: 0}
   cardTrail: {fileID: 2088855544179431916, guid: 89bd1f99d1f336945b52b060fd741f0a,
@@ -5879,6 +5956,7 @@ MonoBehaviour:
   baseDashCooldown: 0
   onPlayerDashCooldownRing: {fileID: 0}
   baseDashing: 0
+  rotateSpellCooldown: 0
 --- !u!54 &1851593813860474082
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -21032,6 +21032,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 46870567241696049, guid: 0f9ffe8302123f5419638698ccf5218d,
         type: 3}
+      propertyPath: tempSpellPrimary.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 46870567241696049, guid: 0f9ffe8302123f5419638698ccf5218d,
+        type: 3}
+      propertyPath: tempSpellSecondary.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 46870567241696049, guid: 0f9ffe8302123f5419638698ccf5218d,
+        type: 3}
       propertyPath: AOEpoint
       value: 
       objectReference: {fileID: 2042537158}
@@ -21046,6 +21056,11 @@ PrefabInstance:
       propertyPath: onPlayerDashCooldownRing
       value: 
       objectReference: {fileID: 746359227}
+    - target: {fileID: 46870567241696049, guid: 0f9ffe8302123f5419638698ccf5218d,
+        type: 3}
+      propertyPath: rotateSpellRing
+      value: 
+      objectReference: {fileID: 2079915904}
     - target: {fileID: 4053079160233763259, guid: 0f9ffe8302123f5419638698ccf5218d,
         type: 3}
       propertyPath: brown
@@ -31295,6 +31310,18 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 96509884}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2079915904 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4132671006792823937, guid: 0f9ffe8302123f5419638698ccf5218d,
+    type: 3}
+  m_PrefabInstance: {fileID: 1438511504}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &2082389276 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9169296815149753709, guid: 5f75123534788154fa111c80e26fab55,
