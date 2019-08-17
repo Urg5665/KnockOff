@@ -119,6 +119,10 @@ public class WindWaveThrow : MonoBehaviour
         {
             collision.gameObject.GetComponent<PlayerControlXbox>().finishDash();
             collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * windForce); // Knock Back
+            if ((collision.gameObject.GetComponent<PlayerControlXbox>().stunLength > 0))
+            {
+                collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * windForce ); // Double If Stuned
+            }
             collision.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * windKnockUp); // Knock Up
             collision.GetComponent<BoxCollider>().isTrigger = true;
             //Destroy(this.gameObject);
@@ -141,6 +145,10 @@ public class WindWaveThrow : MonoBehaviour
         {
             collision.gameObject.GetComponent<PlayerControl>().finishDash();
             collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * windForce); // Knock Back
+            if ((collision.gameObject.GetComponent<PlayerControl>().stunLength > 0))
+            {
+                collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * windForce); // Double If Stuned
+            }
             collision.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * windKnockUp); // Knock Up
             collision.GetComponent<BoxCollider>().isTrigger = true;
             hitPlayer = true;

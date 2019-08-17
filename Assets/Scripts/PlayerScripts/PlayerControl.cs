@@ -283,6 +283,7 @@ public class PlayerControl : MonoBehaviour
 
         }
         rotateSpellRing.fillAmount = (float)rotateSpellChannel / 30;
+        //Debug.Log(rotateSpellChannel); 
         if (Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.E)) // Switch Spells 
         {
             speed = 0.0f;
@@ -291,7 +292,6 @@ public class PlayerControl : MonoBehaviour
                 canCast[i] = false;
             }
             rotateSpellChannel++;
-            Debug.Log(rotateSpellChannel);
             if (rotateSpellChannel == 30 && Input.GetKey(KeyCode.Q))
             {
                 for (int i = 0; i < 4; i++)
@@ -324,7 +324,7 @@ public class PlayerControl : MonoBehaviour
             }
 
         }
-        else
+        else if (Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.E))
         {
             rotateSpellChannel = 0;
             rotateSpellRing.fillAmount = 0;

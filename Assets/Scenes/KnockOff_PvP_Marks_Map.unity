@@ -2961,6 +2961,18 @@ Transform:
   m_Father: {fileID: 1263250255}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 46.428, y: -104.78001, z: -165.763}
+--- !u!114 &187511071 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6991333443903140718, guid: 87d47c881ef98164e8ae36907860a9fd,
+    type: 3}
+  m_PrefabInstance: {fileID: 1294518313808581928}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &189720107 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 742727634293241870, guid: 79dc483f8647f6a499d8b2f1bba59c36,
@@ -32073,6 +32085,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1294518313494728842, guid: 87d47c881ef98164e8ae36907860a9fd,
         type: 3}
+      propertyPath: tempSpellPrimary.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1294518313494728842, guid: 87d47c881ef98164e8ae36907860a9fd,
+        type: 3}
+      propertyPath: tempSpellSecondary.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1294518313494728842, guid: 87d47c881ef98164e8ae36907860a9fd,
+        type: 3}
       propertyPath: AOEpoint
       value: 
       objectReference: {fileID: 1255367664}
@@ -32118,6 +32140,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7256098974331200233, guid: e56f22115229a614bb99a4f07ef100a0,
         type: 3}
+    - target: {fileID: 1294518313494728842, guid: 87d47c881ef98164e8ae36907860a9fd,
+        type: 3}
+      propertyPath: rotateSpellRing
+      value: 
+      objectReference: {fileID: 187511071}
     - target: {fileID: 1294518314683911028, guid: 87d47c881ef98164e8ae36907860a9fd,
         type: 3}
       propertyPath: m_IsActive

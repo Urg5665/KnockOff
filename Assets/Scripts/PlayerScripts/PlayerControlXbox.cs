@@ -30,6 +30,10 @@ public class PlayerControlXbox : MonoBehaviour
     public string[] spellPrimary; // Keywords "Fire", "Wind", "Earth" "Water" use "" for empty
     public string[] spellSecondary; // Keywords "Aoe", "Range", "Lob"? not as sure about the last two use "" for empty
 
+    // for swaping directions around
+    public string[] tempSpellPrimary;
+    public string[] tempSpellSecondary;
+
     public GameObject card;
     public GameObject newCard;
     public GameObject cardTrail;
@@ -78,6 +82,9 @@ public class PlayerControlXbox : MonoBehaviour
     public int baseDashCooldown;
     public Image onPlayerDashCooldownRing;
     public bool baseDashing;
+
+    public int rotateSpellChannel;
+    public Image rotateSpellRing;
 
     void Start()
     {
@@ -275,6 +282,61 @@ public class PlayerControlXbox : MonoBehaviour
         // Input.GetAxis("CardThrow") == 1
         //Input.GetButton("CardThrow")
         //Input.GetAxis("SpellThrow") == 1
+        rotateSpellRing.fillAmount = (float)rotateSpellChannel / 30;
+        //Debug.Log(rotateSpellChannel); 
+        if (Input.GetButton("Fire2") == true || Input.GetButton("Fire3") == true) // Switch Spells 
+        {
+            speed = 0.0f;
+            for (int i = 0; i < 4; i++)
+            {
+                canCast[i] = false;
+            }
+            rotateSpellChannel++;
+            if (rotateSpellChannel == 30 && Input.GetButton("Fire3") == true)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    tempSpellPrimary[i] = spellPrimary[i];
+                    tempSpellSecondary[i] = spellSecondary[i];
+                }
+                for (int i = 0; i < 3; i++)
+                {
+                    spellPrimary[i] = tempSpellPrimary[i + 1];
+                    spellSecondary[i] = tempSpellSecondary[i + 1];
+                }
+                spellPrimary[3] = tempSpellPrimary[0];
+                spellSecondary[3] = tempSpellSecondary[0];
+            }
+            if (rotateSpellChannel == 30 && Input.GetButton("Fire2") == true)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    tempSpellPrimary[i] = spellPrimary[i];
+                    tempSpellSecondary[i] = spellSecondary[i];
+                }
+                for (int i = 0; i < 3; i++)
+                {
+                    spellPrimary[i + 1] = tempSpellPrimary[i];
+                    spellSecondary[i + 1] = tempSpellSecondary[i];
+                }
+                spellPrimary[0] = tempSpellPrimary[3];
+                spellSecondary[0] = tempSpellSecondary[3];
+            }
+
+        }
+        else if (Input.GetButtonUp("Fire2") == true || Input.GetButtonUp("Fire3") == true)
+        {
+            rotateSpellChannel = 0;
+            rotateSpellRing.fillAmount = 0;
+            speed = 7.5f;
+            for (int i = 0; i < 4; i++)
+            {
+                canCast[i] = true;
+            }
+        }
+
+
+
         if (Input.GetButton("Fire1") == true && !dashing && baseDashCooldown <= 0) // Base Dash
         {
             castAfterDash = false;

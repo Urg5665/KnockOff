@@ -122,6 +122,10 @@ public class WaterPullThrow : MonoBehaviour
         {
             collision.gameObject.GetComponent<PlayerControlXbox>().finishDash();
             collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * waterForce * -1); // Knock Back
+            if ((collision.gameObject.GetComponent<PlayerControlXbox>().stunLength > 0))
+            {
+                collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * waterForce * -1); // Double If Stuned
+            }
             collision.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * waterKnockUp); // Knock Up
             playerHit = collision.gameObject;                                                                               
             collision.GetComponent<BoxCollider>().isTrigger = true;
@@ -144,6 +148,10 @@ public class WaterPullThrow : MonoBehaviour
         {
             collision.gameObject.GetComponent<PlayerControl>().finishDash();
             collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * waterForce * -1); // Knock Back
+            if (collision.gameObject.GetComponent<PlayerControl>().stunLength > 0)
+            {
+                collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * waterForce * -1); // Double If Stuned
+            }
             collision.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * waterKnockUp); // Knock Up
             playerHit = collision.gameObject;                                                                               
             collision.GetComponent<BoxCollider>().isTrigger = true;
