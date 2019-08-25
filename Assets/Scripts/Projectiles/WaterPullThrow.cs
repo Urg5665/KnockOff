@@ -64,7 +64,7 @@ public class WaterPullThrow : MonoBehaviour
         transform.LookAt(playerAim.transform);
 
         spellDir = this.gameObject.transform.forward;
-        waterForce = 700;
+        waterForce = 1000;
         waterKnockUp = 250;
         hitPlayer = false;
         throwSpeed = 60;
@@ -124,7 +124,7 @@ public class WaterPullThrow : MonoBehaviour
             collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * waterForce * -1); // Knock Back
             if ((collision.gameObject.GetComponent<PlayerControlXbox>().stunLength > 0))
             {
-                collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * waterForce * -1); // Double If Stuned
+                collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * waterForce/2 * -1); // Double If Stuned
             }
             collision.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * waterKnockUp); // Knock Up
             playerHit = collision.gameObject;                                                                               
@@ -150,7 +150,7 @@ public class WaterPullThrow : MonoBehaviour
             collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * waterForce * -1); // Knock Back
             if (collision.gameObject.GetComponent<PlayerControl>().stunLength > 0)
             {
-                collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * waterForce * -1); // Double If Stuned
+                collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * waterForce/2 * -1); // Double If Stuned
             }
             collision.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * waterKnockUp); // Knock Up
             playerHit = collision.gameObject;                                                                               

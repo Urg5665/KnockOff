@@ -160,7 +160,7 @@ public class PlayerControlXbox : MonoBehaviour
         }
         if (stunLength == 0)
         {
-            speed = 7.5f;
+            speed = 10.0f;
             onPlayerText.text = "";
             onPlayerStunRing.enabled = false;
         }
@@ -186,7 +186,7 @@ public class PlayerControlXbox : MonoBehaviour
         {
             if (dashingTime == 0)
             {
-                speed = 7.5f;
+                speed = 10.0f;
                 onPlayerText.text = "";
                 stunLength = 0;
             }
@@ -328,7 +328,7 @@ public class PlayerControlXbox : MonoBehaviour
         {
             rotateSpellChannel = 0;
             rotateSpellRing.fillAmount = 0;
-            speed = 7.5f;
+            speed = 10.0f;
             for (int i = 0; i < 4; i++)
             {
                 canCast[i] = true;

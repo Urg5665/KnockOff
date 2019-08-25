@@ -5880,7 +5880,7 @@ MonoBehaviour:
   playerAim: {fileID: 1958647858}
   playerUI: {fileID: 1016335769}
   playerNum: 1
-  speed: 7.5
+  speed: 10
   movement: {fileID: 4589685495232286487}
   rb: {fileID: 1851593813860474082}
   grounded: 0
@@ -5956,7 +5956,8 @@ MonoBehaviour:
   baseDashCooldown: 0
   onPlayerDashCooldownRing: {fileID: 0}
   baseDashing: 0
-  rotateSpellCooldown: 0
+  rotateSpellChannel: 0
+  rotateSpellRing: {fileID: 0}
 --- !u!54 &1851593813860474082
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -105,6 +105,7 @@ public class PlayerControl : MonoBehaviour
         cardsThrown = 0;
         canCast = new bool[4]; // ignore zero here
         //onPlayerUIButton = new GameObject[4];
+        speed = 10.0f;
         waterDashForceUp = 0;
         dashDirectionTime = 0;
         dashing = false;
@@ -183,7 +184,7 @@ public class PlayerControl : MonoBehaviour
         }
         if (stunLength == 0)
         {
-            speed = 7.5f;
+            speed = 10.0f;
             onPlayerText.text = "";
             onPlayerStunRing.enabled = false;
         }
@@ -196,7 +197,7 @@ public class PlayerControl : MonoBehaviour
         {
             if (dashingTime == 0)
             {
-                speed = 7.5f;
+                speed = 10.0f;
                 onPlayerText.text = "";
                 stunLength = 0;
             }
@@ -328,7 +329,7 @@ public class PlayerControl : MonoBehaviour
         {
             rotateSpellChannel = 0;
             rotateSpellRing.fillAmount = 0;
-            speed = 7.5f;
+            speed = 10.0f;
             for (int i = 0; i < 4; i++)
             {
                 canCast[i] = true;

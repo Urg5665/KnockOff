@@ -64,7 +64,7 @@ public class WindWaveThrow : MonoBehaviour
 
         transform.LookAt(playerAim.transform);
         spellDir = this.gameObject.transform.forward;
-        windForce = 700;
+        windForce = 1000;
         windKnockUp = 250;
         hitPlayer = false;
         throwSpeed = 60;
@@ -121,7 +121,7 @@ public class WindWaveThrow : MonoBehaviour
             collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * windForce); // Knock Back
             if ((collision.gameObject.GetComponent<PlayerControlXbox>().stunLength > 0))
             {
-                collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * windForce ); // Double If Stuned
+                collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * windForce/2 ); // Double If Stuned
             }
             collision.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * windKnockUp); // Knock Up
             collision.GetComponent<BoxCollider>().isTrigger = true;
@@ -147,7 +147,7 @@ public class WindWaveThrow : MonoBehaviour
             collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * windForce); // Knock Back
             if ((collision.gameObject.GetComponent<PlayerControl>().stunLength > 0))
             {
-                collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * windForce); // Double If Stuned
+                collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * windForce/2); // Double If Stuned
             }
             collision.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * windKnockUp); // Knock Up
             collision.GetComponent<BoxCollider>().isTrigger = true;
