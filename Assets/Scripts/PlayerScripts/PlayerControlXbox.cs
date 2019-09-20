@@ -174,7 +174,7 @@ public class PlayerControlXbox : MonoBehaviour
         if (baseDashCooldown > 0)
         {
             baseDashCooldown--;
-            onPlayerDashCooldownRing.fillAmount = ((float)baseDashCooldown / 200);
+            onPlayerDashCooldownRing.fillAmount = ((float)baseDashCooldown / 100);
         }
         if (!dashing)
         {
@@ -195,11 +195,19 @@ public class PlayerControlXbox : MonoBehaviour
             dashingTime++;
             if (AOEKnockBack)
             {
-                transform.Translate(Vector3.back * Time.deltaTime * speed * 3, Space.Self);
+                transform.Translate(Vector3.back * Time.deltaTime * speed * 1.5f, Space.Self);
             }
             if (!AOEKnockBack)
             {
-                transform.Translate(Vector3.forward * Time.deltaTime * speed * 5, Space.Self);
+                transform.Translate(Vector3.forward * Time.deltaTime * speed * 4, Space.Self);
+            }
+            if (baseDashing)
+            {
+                dashLength = 10;
+            }
+            else
+            {
+                dashLength = 20;
             }
 
             if (this.transform.position.y < 2.5)
@@ -286,6 +294,14 @@ public class PlayerControlXbox : MonoBehaviour
         //Debug.Log(rotateSpellChannel); 
         if (Input.GetButton("Fire2") == true || Input.GetButton("Fire3") == true) // Switch Spells 
         {
+            if (Input.GetButton("Fire2"))
+            {
+                rotateSpellRing.GetComponent<Image>().fillClockwise = false;
+            }
+            else if (Input.GetButton("Fire3"))
+            {
+                rotateSpellRing.GetComponent<Image>().fillClockwise = true;
+            }
             speed = 0.0f;
             for (int i = 0; i < 4; i++)
             {
@@ -340,7 +356,7 @@ public class PlayerControlXbox : MonoBehaviour
         if (Input.GetButton("Fire1") == true && !dashing && baseDashCooldown <= 0) // Base Dash
         {
             castAfterDash = false;
-            baseDashCooldown = 200;
+            baseDashCooldown = 100;
             dashing = true;
             dashDirection = spellSelected;
             dashAim = new Vector3(player2Aim.transform.position.x, player2Aim.transform.position.y, player2Aim.transform.position.z);

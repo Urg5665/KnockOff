@@ -170,7 +170,7 @@ public class PlayerControl : MonoBehaviour
         if ( baseDashCooldown > 0)
         {
             baseDashCooldown-- ;
-            onPlayerDashCooldownRing.fillAmount = ((float)baseDashCooldown / 200);
+            onPlayerDashCooldownRing.fillAmount = ((float)baseDashCooldown / 100);
         }
 
 
@@ -206,11 +206,19 @@ public class PlayerControl : MonoBehaviour
             dashingTime++;
             if (AOEKnockBack)
             {
-                transform.Translate(Vector3.back * Time.deltaTime * speed * 3, Space.Self);
+                transform.Translate(Vector3.back * Time.deltaTime * speed * 1.5f, Space.Self);
             }
             if (!AOEKnockBack)
             {
-                transform.Translate(Vector3.forward * Time.deltaTime * speed * 5, Space.Self);
+                transform.Translate(Vector3.forward * Time.deltaTime * speed * 4, Space.Self);
+            }
+            if (baseDashing)
+            {
+                dashLength = 10;
+            }
+            else
+            {
+                dashLength = 20;
             }
 
             if (this.transform.position.y < 2.5)
@@ -287,7 +295,15 @@ public class PlayerControl : MonoBehaviour
         //Debug.Log(rotateSpellChannel); 
         if (Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.E)) // Switch Spells 
         {
-            speed = 0.0f;
+            if (Input.GetKey(KeyCode.Q))
+            {
+                rotateSpellRing.GetComponent<Image>().fillClockwise = false;
+            }
+            else if (Input.GetKey(KeyCode.E))
+            {
+                rotateSpellRing.GetComponent<Image>().fillClockwise = true;
+            }
+
             for (int i = 0; i < 4; i++)
             {
                 canCast[i] = false;
@@ -339,7 +355,7 @@ public class PlayerControl : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && !dashing && baseDashCooldown <= 0) // Base Dash
         {
             castAfterDash = false;
-            baseDashCooldown = 200;
+            baseDashCooldown = 100;
             dashing = true;
             dashDirection = spellSelected;
             dashAim = new Vector3(player1Aim.transform.position.x, player1Aim.transform.position.y, player1Aim.transform.position.z);
