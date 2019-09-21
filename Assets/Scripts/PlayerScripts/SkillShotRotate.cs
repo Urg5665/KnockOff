@@ -147,11 +147,11 @@ public class SkillShotRotate : MonoBehaviour
             }
             if (playerControl.spellPrimary[playerControl.spellSelected] == "Earth") // aaplies base spell ccolor
             {
-                cardSkillShot.GetComponent<Image>().color = new Color32(90, 80, 0, 255);
-                aoeSkillShot.GetComponent<Image>().color = new Color32(90, 80, 0, 255);
-                rangeSkillShot.GetComponent<Image>().color = new Color32(90, 80, 0, 255);
-                dashSkillShot.GetComponent<Image>().color = new Color32(90, 80, 0, 255);
-                boomSkillShot.GetComponent<Image>().color = new Color32(90, 80, 0, 255);
+                cardSkillShot.GetComponent<Image>().color = new Color32(50, 205, 50, 255);
+                aoeSkillShot.GetComponent<Image>().color = new Color32(50, 205, 50, 255);
+                rangeSkillShot.GetComponent<Image>().color = new Color32(50, 205, 50, 255);
+                dashSkillShot.GetComponent<Image>().color = new Color32(50, 205, 50, 255);
+                boomSkillShot.GetComponent<Image>().color = new Color32(50, 205, 50, 255);
 
             }
             if (playerControl.spellSecondary[playerControl.spellSelected] == "Range")
@@ -248,11 +248,11 @@ public class SkillShotRotate : MonoBehaviour
             }
             if (playerControlXbox.spellPrimary[playerControlXbox.spellSelected] == "Earth") // aaplies base spell ccolor
             {
-                cardSkillShot.GetComponent<Image>().color = new Color32(90, 80, 0, 255);
-                aoeSkillShot.GetComponent<Image>().color = new Color32(90, 80, 0, 255);
-                rangeSkillShot.GetComponent<Image>().color = new Color32(90, 80, 0, 255);
-                dashSkillShot.GetComponent<Image>().color = new Color32(90, 80, 0, 255);
-                boomSkillShot.GetComponent<Image>().color = new Color32(90, 80, 0, 255);
+                cardSkillShot.GetComponent<Image>().color = new Color32(50, 205, 50, 255);
+                aoeSkillShot.GetComponent<Image>().color = new Color32(50, 205, 50, 255);
+                rangeSkillShot.GetComponent<Image>().color = new Color32(50, 205, 50, 255);
+                dashSkillShot.GetComponent<Image>().color = new Color32(50, 205, 50, 255);
+                boomSkillShot.GetComponent<Image>().color = new Color32(50, 205, 50, 255);
 
             }
             if (playerControlXbox.spellSecondary[playerControlXbox.spellSelected] == "Range")

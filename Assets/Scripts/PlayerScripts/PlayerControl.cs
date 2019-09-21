@@ -214,7 +214,7 @@ public class PlayerControl : MonoBehaviour
             }
             if (baseDashing)
             {
-                dashLength = 10;
+                dashLength = 15;
             }
             else
             {
@@ -308,6 +308,7 @@ public class PlayerControl : MonoBehaviour
             {
                 canCast[i] = false;
             }
+            speed = 0.0f;
             rotateSpellChannel++;
             if (rotateSpellChannel == 30 && Input.GetKey(KeyCode.Q))
             {

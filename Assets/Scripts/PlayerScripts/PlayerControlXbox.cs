@@ -203,7 +203,7 @@ public class PlayerControlXbox : MonoBehaviour
             }
             if (baseDashing)
             {
-                dashLength = 10;
+                dashLength = 15;
             }
             else
             {
@@ -294,11 +294,11 @@ public class PlayerControlXbox : MonoBehaviour
         //Debug.Log(rotateSpellChannel); 
         if (Input.GetButton("Fire2") == true || Input.GetButton("Fire3") == true) // Switch Spells 
         {
-            if (Input.GetButton("Fire2"))
+            if (Input.GetButton("Fire3"))
             {
                 rotateSpellRing.GetComponent<Image>().fillClockwise = false;
             }
-            else if (Input.GetButton("Fire3"))
+            else if (Input.GetButton("Fire2"))
             {
                 rotateSpellRing.GetComponent<Image>().fillClockwise = true;
             }

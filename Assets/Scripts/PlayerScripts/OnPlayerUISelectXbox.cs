@@ -77,9 +77,9 @@ public class OnPlayerUISelectXbox : MonoBehaviour
             {
                 //image.sprite = brown;
                 //image.sprite = brown;
-                innerRing.GetComponent<Image>().color = new Color32(90, 80, 0, 255);
-                colorInner = new Color32(90, 80, 0, 255);
-                childIcon.GetComponent<Image>().color = new Color32(90, 80, 0, 255);
+                innerRing.GetComponent<Image>().color = new Color32(50, 205, 50, 255);
+                colorInner = new Color32(50, 205, 50, 255);
+                childIcon.GetComponent<Image>().color = new Color32(50, 205, 50, 255);
             }
             if (playerControlXbox.spellPrimary[localDirection] == "")
             {
@@ -107,8 +107,8 @@ public class OnPlayerUISelectXbox : MonoBehaviour
             if (playerControlXbox.spellSecondary[localDirection] == "Boom")
             {
                 childIcon.GetComponent<Image>().sprite = boom;
-                outerRing.GetComponent<Image>().color = new Color32(90, 80, 0, 255);
-                colorOuter = new Color32(90, 80, 0, 255);
+                outerRing.GetComponent<Image>().color = new Color32(50, 205, 50, 255);
+            colorOuter = new Color32(90, 80, 0, 255);
             }
             if (playerControlXbox.spellSecondary[localDirection] == "")
             {
