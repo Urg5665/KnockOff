@@ -28,6 +28,7 @@ public class CameraMove : MonoBehaviour
     public Bounds bounds;
 
     public float zDif;
+    public float xDif;
 
     // Start is called before the first frame update
     void Start()
@@ -75,7 +76,39 @@ public class CameraMove : MonoBehaviour
             Zoom();
         }
         zDif = Mathf.Abs(player1.position.z - player2.position.z);
-        //Debug.Log(zDif);
+        xDif = Mathf.Abs(player1.position.x - player2.position.x);
+        Debug.Log(zDif);
+        if ( xDif < 15 && zDif >= 20 && zDif < 30)
+        {
+            minZoom = 40;
+            maxZoom = 65;
+        }
+        else if (xDif < 15 && zDif >= 30 && zDif < 40)
+        {
+            minZoom = 50;
+            maxZoom = 75;
+        }
+        else if (xDif < 15 && zDif >= 40 && zDif < 50)
+        {
+            minZoom = 60;
+            maxZoom = 85;
+        }
+        else if (xDif < 15 && zDif >= 50 && zDif < 60)
+        {
+            minZoom = 70;
+            maxZoom = 95;
+        }
+        else if (xDif < 15 && zDif >= 60 && zDif < 80)
+        {
+            minZoom = 80;
+            maxZoom = 115;
+        }
+        else
+        {
+            minZoom = 30;
+            maxZoom = 55;
+        }
+        /*
         if ( zDif < 30)
         {
             maxZoom = 55;
@@ -96,7 +129,7 @@ public class CameraMove : MonoBehaviour
         {
             maxZoom = 120;
         }
-
+        */
 
         if (Input.GetKeyDown(KeyCode.G)){
             StartCoroutine(Shake(.15f, .4f));
