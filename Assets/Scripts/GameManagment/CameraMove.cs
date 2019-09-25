@@ -55,7 +55,6 @@ public class CameraMove : MonoBehaviour
             bounds.center = player2.transform.position;
             return bounds.center;
         }
-
         else
         {
             bounds = new Bounds(targets[0].position, Vector3.zero);
@@ -67,7 +66,6 @@ public class CameraMove : MonoBehaviour
         }
 
     }
-
     void LateUpdate()
     {
         Move();
@@ -77,7 +75,7 @@ public class CameraMove : MonoBehaviour
         }
         zDif = Mathf.Abs(player1.position.z - player2.position.z);
         xDif = Mathf.Abs(player1.position.x - player2.position.x);
-        Debug.Log(zDif);
+        //Debug.Log(zDif);
         if ( xDif < 15 && zDif >= 20 && zDif < 30)
         {
             minZoom = 40;

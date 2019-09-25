@@ -33,7 +33,7 @@ public class TileBehavoir : MonoBehaviour
     {
         if (collision.gameObject.tag == "earthQuake")
         {
-            Debug.Log(this.gameObject.name + " was Destroyed");
+            //Debug.Log(this.gameObject.name + " was Destroyed");
             destroyed = true;
         }
     }
@@ -44,9 +44,16 @@ public class TileBehavoir : MonoBehaviour
         {
             //Debug.Log(player2Score + "  " + deathPlane.player2Score);
 
-            //destroyed = false;
+            destroyed = false;
+            this.transform.position = new Vector3(transform.position.x, 0f, transform.position.z);
+            col.enabled = true;
+            mesh.enabled = true;
+            destroyTimer = 0;
+            player1Score = deathPlane.player1Score;
+            player2Score = deathPlane.player2Score;
             //this.transform.position = new Vector3(transform.position.x, 0, transform.position.z);
-            destroyTimer += 3;
+            //destroyed = false;
+            //destroyTimer += 5;
         }
 
         if (Input.GetKey(KeyCode.H))
@@ -64,24 +71,28 @@ public class TileBehavoir : MonoBehaviour
                 
                 this.transform.position = new Vector3(transform.position.x,  - destroyTimer/2, transform.position.z);
             }
+            /*
             else if (destroyTimer >= destroyLength)
             {
                 //Debug.Log("Rising");
                 this.transform.position = new Vector3(transform.position.x, 1.04f + (- (destroyLength+ 50) + destroyTimer), transform.position.z);
-            }
+            }*/
         }
+        /*
         if (destroyTimer > destroyLength + 50)
         {
             destroyed = false;
             destroyTimer = 0;
+            Debug.Log(destroyTimer + " / " + destroyLength);
             mesh.enabled = true;
             col.enabled = true;
             this.transform.position = new Vector3(transform.position.x, 0, transform.position.z);
-        }
+        }*/
+        /*
         if (!destroyed)
         {
             player1Score = deathPlane.player1Score;
             player2Score = deathPlane.player2Score;
-        }
+        }*/
     }
 }

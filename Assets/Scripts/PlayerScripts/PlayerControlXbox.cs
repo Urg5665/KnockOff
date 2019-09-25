@@ -174,7 +174,7 @@ public class PlayerControlXbox : MonoBehaviour
         if (baseDashCooldown > 0)
         {
             baseDashCooldown--;
-            onPlayerDashCooldownRing.fillAmount = ((float)baseDashCooldown / 100);
+            onPlayerDashCooldownRing.fillAmount = ((float)baseDashCooldown / 200);
         }
         if (!dashing)
         {
@@ -203,7 +203,7 @@ public class PlayerControlXbox : MonoBehaviour
             }
             if (baseDashing)
             {
-                dashLength = 15;
+                dashLength = 10;
             }
             else
             {
@@ -356,7 +356,7 @@ public class PlayerControlXbox : MonoBehaviour
         if (Input.GetButton("Fire1") == true && !dashing && baseDashCooldown <= 0) // Base Dash
         {
             castAfterDash = false;
-            baseDashCooldown = 100;
+            baseDashCooldown = 200;
             dashing = true;
             dashDirection = spellSelected;
             dashAim = new Vector3(player2Aim.transform.position.x, player2Aim.transform.position.y, player2Aim.transform.position.z);

@@ -170,7 +170,7 @@ public class PlayerControl : MonoBehaviour
         if ( baseDashCooldown > 0)
         {
             baseDashCooldown-- ;
-            onPlayerDashCooldownRing.fillAmount = ((float)baseDashCooldown / 100);
+            onPlayerDashCooldownRing.fillAmount = ((float)baseDashCooldown / 200);
         }
 
 
@@ -214,7 +214,7 @@ public class PlayerControl : MonoBehaviour
             }
             if (baseDashing)
             {
-                dashLength = 15;
+                dashLength = 10;
             }
             else
             {
@@ -356,7 +356,7 @@ public class PlayerControl : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && !dashing && baseDashCooldown <= 0) // Base Dash
         {
             castAfterDash = false;
-            baseDashCooldown = 100;
+            baseDashCooldown = 200;
             dashing = true;
             dashDirection = spellSelected;
             dashAim = new Vector3(player1Aim.transform.position.x, player1Aim.transform.position.y, player1Aim.transform.position.z);
@@ -422,6 +422,7 @@ public class PlayerControl : MonoBehaviour
 
 
         }
+        //Debug.Log(transform.position.y + "  " + grounded);
         if (this.transform.position.y < 2.5f || this.transform.position.y > 3f)
         {
             grounded = false;
