@@ -19,6 +19,7 @@ public class WaterPullThrow : MonoBehaviour
     public bool boomSpell;
     public bool boomHover;
     public bool boomReturn;
+    public int boomSpellCounter;
 
     public float waterForce;
     public float waterKnockUp;
@@ -64,8 +65,8 @@ public class WaterPullThrow : MonoBehaviour
         transform.LookAt(playerAim.transform);
 
         spellDir = this.gameObject.transform.forward;
-        waterForce = 1000;
-        waterKnockUp = 250;
+        waterForce = 1000; //1250
+        waterKnockUp = 300;//250
         hitPlayer = false;
         throwSpeed = 60;
         rangeCounter = 0;
@@ -230,6 +231,14 @@ public class WaterPullThrow : MonoBehaviour
         if (boomReturn)
         {
             transform.LookAt(player.transform.position);
+            if (boomSpellCounter == 1)
+            {
+                transform.RotateAround(player.transform.position, Vector3.up, 100 * Time.deltaTime);
+            }
+            if (boomSpellCounter == 2)
+            {
+                transform.RotateAround(player.transform.position, Vector3.up, -100 * Time.deltaTime);
+            }
         }
 
         if (rangeCounter == 1 + maxRange)
@@ -271,13 +280,13 @@ public class WaterPullThrow : MonoBehaviour
             {
                 this.transform.position += new Vector3(0, .2f, 0);
             }
-            if (hoverDur > 55)
+            if (hoverDur > 95)
             {
                 this.transform.position -= new Vector3(0, 1f, 0);
             }
 
         }
-        if (rangeCounter == (maxRange * 4))
+        if (rangeCounter == (maxRange * 6))
         {
             if (boomSpell)
             {

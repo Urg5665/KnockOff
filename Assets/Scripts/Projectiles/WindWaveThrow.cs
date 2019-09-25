@@ -19,6 +19,7 @@ public class WindWaveThrow : MonoBehaviour
     public bool boomSpell;
     public bool boomReturn;
     public bool boomHover;
+    public int boomSpellCounter;
 
     public float windForce;
     public float windKnockUp;
@@ -64,8 +65,8 @@ public class WindWaveThrow : MonoBehaviour
 
         transform.LookAt(playerAim.transform);
         spellDir = this.gameObject.transform.forward;
-        windForce = 1000;
-        windKnockUp = 250;
+        windForce = 900;
+        windKnockUp = 300;
         hitPlayer = false;
         throwSpeed = 60;
         rangeCounter = 0;
@@ -225,6 +226,14 @@ public class WindWaveThrow : MonoBehaviour
         if (boomReturn)
         {
             transform.LookAt(player.transform.position);
+            if (boomSpellCounter == 1)
+            {
+                transform.RotateAround(player.transform.position, Vector3.up, 100 * Time.deltaTime);
+            }
+            if (boomSpellCounter == 2)
+            {
+                transform.RotateAround(player.transform.position, Vector3.up, -100 * Time.deltaTime);
+            }
         }
 
         if (rangeCounter == maxRange + 1)
@@ -265,13 +274,13 @@ public class WindWaveThrow : MonoBehaviour
             {
                 this.transform.position += new Vector3(0, .2f, 0);
             }
-            if (hoverDur > 55)
+            if (hoverDur > 95)
             {
                 this.transform.position -= new Vector3(0, 1f, 0);
             }
 
         }
-        if (rangeCounter == maxRange * 4)
+        if (rangeCounter == maxRange * 6)
         {
             if (boomSpell)
             {

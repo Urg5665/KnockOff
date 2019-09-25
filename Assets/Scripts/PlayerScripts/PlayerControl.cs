@@ -169,7 +169,14 @@ public class PlayerControl : MonoBehaviour
         }
         if ( baseDashCooldown > 0)
         {
-            baseDashCooldown-- ;
+            if (grounded)
+            {
+                baseDashCooldown -= 5;
+            }
+            else
+            {
+                baseDashCooldown--;
+            }
             onPlayerDashCooldownRing.fillAmount = ((float)baseDashCooldown / 200);
         }
 
@@ -431,6 +438,7 @@ public class PlayerControl : MonoBehaviour
         if (this.transform.position.y >= 2.5f && this.transform.position.y <= 3f)
         {
             grounded = true;
+            //Debug.Log(baseDashCooldown);
             if (airBorn)
             {
                 this.GetComponent<BoxCollider>().isTrigger = false;
@@ -507,17 +515,21 @@ public class PlayerControl : MonoBehaviour
         }
         if (spellSecondary[spellSelected] == "Boom")
         {
-            newSpell = Instantiate(spellProjectile[0], this.transform.position, spellProjectile[0].transform.rotation);
-            newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - .25f, newSpell.transform.position.z);
-            newSpell.GetComponent<FireBallThrow>().spellNum = spellSelected;
-            //Debug.Log("Basic");
-            newSpell.GetComponent<FireBallThrow>().maxRange = boomBaseRange;
-            newSpell.GetComponent<FireBallThrow>().throwSpeed = boomBaseSpeed;
-            newSpell.GetComponent<FireBallThrow>().boomSpell = true;
-            canCast[spellSelected] = false;
             fireBallID++;
-            newSpell.GetComponent<FireBallThrow>().fireBallID = fireBallID;
-            //print("FireballID:" + newSpell.GetComponent<FireBallThrow>().fireBallID);
+            for (int i = 0; i < 3; i++)
+            {
+                newSpell = Instantiate(spellProjectile[0], this.transform.position, spellProjectile[0].transform.rotation);
+                newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - .25f, newSpell.transform.position.z);
+                newSpell.GetComponent<FireBallThrow>().spellNum = spellSelected;
+                //Debug.Log("Basic");
+                newSpell.GetComponent<FireBallThrow>().maxRange = boomBaseRange;
+                newSpell.GetComponent<FireBallThrow>().throwSpeed = boomBaseSpeed;
+                newSpell.GetComponent<FireBallThrow>().boomSpellCounter = i;
+                newSpell.GetComponent<FireBallThrow>().boomSpell = true;
+                canCast[spellSelected] = false;
+                newSpell.GetComponent<FireBallThrow>().fireBallID = fireBallID;
+                //print("FireballID:" + newSpell.GetComponent<FireBallThrow>().fireBallID);
+            }
         }
         if (spellSecondary[spellSelected] == "AOE")
         {
@@ -606,14 +618,20 @@ this.GetComponent<BoxCollider>().isTrigger = true;
         }
         if (spellSecondary[spellSelected] == "Boom")
         {
-            newSpell = Instantiate(spellProjectile[1], this.transform.position, spellProjectile[0].transform.rotation);
-            newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - .25f, newSpell.transform.position.z);
-            newSpell.GetComponent<WindWaveThrow>().spellNum = spellSelected;
-            //Debug.Log("Basic");
-            newSpell.GetComponent<WindWaveThrow>().maxRange = boomBaseRange;
-            newSpell.GetComponent<WindWaveThrow>().throwSpeed = boomBaseSpeed;
-            newSpell.GetComponent<WindWaveThrow>().boomSpell = true;
-            canCast[spellSelected] = false;
+            for (int i = 0; i < 3; i++)
+            {
+                newSpell = Instantiate(spellProjectile[1], this.transform.position, spellProjectile[0].transform.rotation);
+                newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - .25f, newSpell.transform.position.z);
+                newSpell.GetComponent<WindWaveThrow>().spellNum = spellSelected;
+                //Debug.Log("Basic");
+                newSpell.GetComponent<WindWaveThrow>().maxRange = boomBaseRange;
+                newSpell.GetComponent<WindWaveThrow>().throwSpeed = boomBaseSpeed;
+                newSpell.GetComponent<WindWaveThrow>().boomSpellCounter = i;
+                newSpell.GetComponent<WindWaveThrow>().boomSpell = true;
+                canCast[spellSelected] = false;
+            }
+
+
         }
         else if (spellSecondary[spellSelected] == "AOE")
         {
@@ -692,14 +710,19 @@ this.GetComponent<BoxCollider>().isTrigger = true;
         }
         if (spellSecondary[spellSelected] == "Boom")
         {
-            newSpell = Instantiate(spellProjectile[2], this.transform.position, spellProjectile[0].transform.rotation);
-            newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - .25f, newSpell.transform.position.z);
-            newSpell.GetComponent<WaterPullThrow>().spellNum = spellSelected;
-            //Debug.Log("Basic");
-            newSpell.GetComponent<WaterPullThrow>().maxRange = boomBaseRange;
-            newSpell.GetComponent<WaterPullThrow>().throwSpeed = boomBaseSpeed;
-            newSpell.GetComponent<WaterPullThrow>().boomSpell = true;
-            canCast[spellSelected] = false;
+            for (int i = 0; i < 3; i++)
+            {
+                newSpell = Instantiate(spellProjectile[2], this.transform.position, spellProjectile[0].transform.rotation);
+                newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - .25f, newSpell.transform.position.z);
+                newSpell.GetComponent<WaterPullThrow>().spellNum = spellSelected;
+                //Debug.Log("Basic");
+                newSpell.GetComponent<WaterPullThrow>().maxRange = boomBaseRange;
+                newSpell.GetComponent<WaterPullThrow>().throwSpeed = boomBaseSpeed;
+                newSpell.GetComponent<WaterPullThrow>().boomSpellCounter = i;
+                newSpell.GetComponent<WaterPullThrow>().boomSpell = true;
+                canCast[spellSelected] = false;
+            }
+
         }
         if (spellSecondary[spellSelected] == "AOE")
         {
@@ -776,14 +799,19 @@ this.GetComponent<BoxCollider>().isTrigger = true;
         }
         if (spellSecondary[spellSelected] == "Boom")
         {
-            newSpell = Instantiate(spellProjectile[3], this.transform.position, spellProjectile[0].transform.rotation);
-            newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - 1f, newSpell.transform.position.z);
-            newSpell.GetComponent< EarthQuakeThrow>().spellNum = spellSelected;
-            //Debug.Log("Basic");
-            newSpell.GetComponent<EarthQuakeThrow>().maxRange = boomBaseRange * 2;
-            newSpell.GetComponent<EarthQuakeThrow>().throwSpeed = boomBaseSpeed / 2;
-            newSpell.GetComponent<EarthQuakeThrow>().boomSpell = true;
-            canCast[spellSelected] = false;
+            for (int i = 0; i < 3; i++)
+            {
+                newSpell = Instantiate(spellProjectile[3], this.transform.position, spellProjectile[0].transform.rotation);
+                newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - 1f, newSpell.transform.position.z);
+                newSpell.GetComponent<EarthQuakeThrow>().spellNum = spellSelected;
+                //Debug.Log("Basic");
+                newSpell.GetComponent<EarthQuakeThrow>().maxRange = boomBaseRange * 2;
+                newSpell.GetComponent<EarthQuakeThrow>().throwSpeed = boomBaseSpeed / 2;
+                newSpell.GetComponent<EarthQuakeThrow>().boomSpellCounter = i;
+                newSpell.GetComponent<EarthQuakeThrow>().boomSpell = true;
+                canCast[spellSelected] = false;
+            }
+
         }
         if (spellSecondary[spellSelected] == "AOE")
         {
@@ -824,7 +852,7 @@ this.GetComponent<BoxCollider>().isTrigger = true;
             newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y -1f, newSpell.transform.position.z);
             newSpell.GetComponent<EarthQuakeThrow>().spellNum = spellSelected;
             newSpell.GetComponent<EarthQuakeThrow>().maxRange = rangeRange;
-            newSpell.GetComponent<EarthQuakeThrow>().throwSpeed = rangeSpeed -30;
+            newSpell.GetComponent<EarthQuakeThrow>().throwSpeed = rangeSpeed;
             canCast[spellSelected] = false;
         }
         if (spellSecondary[spellSelected] == "Dash")

@@ -21,6 +21,7 @@ public class EarthQuakeThrow : MonoBehaviour
     public bool boomSpell; // Code for Boomerang, comes back after
     public bool boomReturn;
     public bool boomHover;
+    public int boomSpellCounter;
 
     //public CameraMove cameraMove;
 
@@ -49,7 +50,7 @@ public class EarthQuakeThrow : MonoBehaviour
             playerControl = player.GetComponent<PlayerControl>();
             spellNum = playerControl.spellSelected;
             dashTarget = GameObject.Find("Player2").transform.position;
-            dashTarget = new Vector3(dashTarget.x, dashTarget.y - .5f, dashTarget.z);
+            dashTarget = new Vector3(dashTarget.x , dashTarget.y - .5f, dashTarget.z );
         }
         if (playerInt == 2)
         {
@@ -72,7 +73,7 @@ public class EarthQuakeThrow : MonoBehaviour
         boomSpell = false;
         boomReturn = false;
         boomHover = false;
-        minReturnDistance = 10;
+        minReturnDistance = 5;
         hoverDur = 0;
         //spellMesh = this.GetComponent<Mesh>();
         if (AOEspell)
@@ -93,6 +94,10 @@ public class EarthQuakeThrow : MonoBehaviour
         if (AOEspell)
         {
             audioSource.volume = 0.2f;
+        }
+        if (dashSpell)
+        {
+            transform.LookAt(dashTarget);
         }
     }
 
@@ -126,11 +131,15 @@ public class EarthQuakeThrow : MonoBehaviour
         {
             if (playerInt == 1)
             {
-                transform.position = Vector3.MoveTowards(transform.position, dashTarget, throwSpeed * Time.deltaTime);
+                transform.Translate(Vector3.forward * Time.deltaTime * 1.5f * throwSpeed, Space.Self);
+                this.transform.position = new Vector3(this.transform.position.x, 1f, this.transform.position.z);
+                //transform.position = Vector3.MoveTowards(transform.position, dashTarget, 1.5f * throwSpeed * Time.deltaTime);
             }
             if (playerInt == 2)
             {
-                transform.position = Vector3.MoveTowards(transform.position, dashTarget, throwSpeed * Time.deltaTime);
+                transform.Translate(Vector3.forward * Time.deltaTime * 1.5f * throwSpeed, Space.Self);
+                this.transform.position = new Vector3(transform.position.x, 1f, transform.position.z);
+                //transform.position = Vector3.MoveTowards(transform.position, dashTarget, 1.5f * throwSpeed * Time.deltaTime);
             }
         }
         rangeCounter++;
@@ -138,6 +147,14 @@ public class EarthQuakeThrow : MonoBehaviour
         if (boomReturn)
         {
             transform.LookAt(new Vector3(player.transform.position.x, player.transform.position.y - 1f, player.transform.position.z));
+            if (boomSpellCounter == 1)
+            {
+                transform.RotateAround(player.transform.position, Vector3.up, 100 * Time.deltaTime);
+            }
+            if (boomSpellCounter == 2)
+            {
+                transform.RotateAround(player.transform.position, Vector3.up, -100 * Time.deltaTime);
+            }
             //Debug.Log(Mathf.Abs(this.transform.position.x - player.transform.position.x) + "   " + Mathf.Abs(this.transform.position.z - player.transform.position.z));
             if (Mathf.Abs(this.transform.position.x - player.transform.position.x) < minReturnDistance && Mathf.Abs(this.transform.position.z - player.transform.position.z) < minReturnDistance)
             {

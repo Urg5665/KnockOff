@@ -21,6 +21,7 @@ public class FireBallThrow : MonoBehaviour
     public bool boomReturn;
     //public GameObject[] newSpellBomb; move this to playerControl so that it is not lost on this destroy
     public bool boomHover;
+    public int boomSpellCounter; // TEST try to get three things to return in a curve
 
     public int rangeCounter;
     public int maxRange;
@@ -284,6 +285,14 @@ public class FireBallThrow : MonoBehaviour
         if (boomReturn)
         {
             transform.LookAt(player.transform.position);
+            if (boomSpellCounter == 1)
+            {
+                transform.RotateAround(player.transform.position, Vector3.up, 100 * Time.deltaTime);
+            }
+            if (boomSpellCounter == 2)
+            {
+                transform.RotateAround(player.transform.position, Vector3.up, -100 * Time.deltaTime);
+            }
             //transform.LookAt(dashTarget); If you want to go to  opposing player // run this
         }
 
@@ -333,14 +342,14 @@ public class FireBallThrow : MonoBehaviour
             {
                 this.transform.position += new Vector3(0, .2f, 0);
             }
-            if(hoverDur > 55)
+            if(hoverDur > 95)
             {
                 this.transform.position -= new Vector3(0, 1f, 0);
             }
             
         }
 
-        if (rangeCounter == (maxRange * 4))
+        if (rangeCounter == (maxRange * 6))
         {
             if (boomSpell)
             {

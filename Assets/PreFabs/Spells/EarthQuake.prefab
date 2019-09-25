@@ -24096,7 +24096,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: d3fb6949ec8164c4fb169b3d4912a6e7, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 74c02f83e25881447af848e43aa868a2, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -24219,6 +24219,7 @@ MonoBehaviour:
   earthParticle: {fileID: 8519480905935268551, guid: 9ccd681b86278b44482109440db8cd4a,
     type: 3}
   newPart: {fileID: 0}
+  hoverDur: 0
 --- !u!54 &6230505840896424009
 Rigidbody:
   m_ObjectHideFlags: 0
