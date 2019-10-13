@@ -22,6 +22,8 @@ public class EarthQuakeThrow : MonoBehaviour
     public bool boomReturn;
     public bool boomHover;
     public int boomSpellCounter;
+    public int boomCurveWidth;
+
 
     //public CameraMove cameraMove;
 
@@ -41,8 +43,13 @@ public class EarthQuakeThrow : MonoBehaviour
     public GameObject newPart;
     public int hoverDur;
 
+    public float lobSpeed;
+    public float lobDec;
+
     private void Awake()
     {
+        lobSpeed = 20;
+        lobDec = 1;
         if (playerInt == 1)
         {
             player = GameObject.Find("Player1");
@@ -51,6 +58,11 @@ public class EarthQuakeThrow : MonoBehaviour
             spellNum = playerControl.spellSelected;
             dashTarget = GameObject.Find("Player2").transform.position;
             dashTarget = new Vector3(dashTarget.x , dashTarget.y - .5f, dashTarget.z );
+            if (playerControl.spellSecondary[spellNum] == "Range")
+            {
+                lobSpeed = 60;
+                lobDec = 5;
+            }
         }
         if (playerInt == 2)
         {
@@ -61,7 +73,6 @@ public class EarthQuakeThrow : MonoBehaviour
             dashTarget = GameObject.Find("Player1").transform.position;
             dashTarget = new Vector3(dashTarget.x, dashTarget.y - .5f, dashTarget.z);
         }
-
         maxRange = 10;
         transform.LookAt(playerAim.transform);
         throwSpeed = 30;
@@ -75,6 +86,9 @@ public class EarthQuakeThrow : MonoBehaviour
         boomHover = false;
         minReturnDistance = 5;
         hoverDur = 0;
+        boomCurveWidth = 50;
+
+
         //spellMesh = this.GetComponent<Mesh>();
         if (AOEspell)
         {
@@ -123,6 +137,21 @@ public class EarthQuakeThrow : MonoBehaviour
             if (!boomHover)
             {
                 transform.Translate(Vector3.forward * Time.deltaTime * throwSpeed, Space.Self);
+                transform.Translate(Vector3.up * Time.deltaTime * lobSpeed, Space.World);
+                lobSpeed -= lobDec;
+                // some reall sloppy player specific stuff dont replicate
+                if (playerInt == 1)
+                {
+                    if (playerControl.spellSecondary[spellNum] == "Range")
+                    {
+                        throwSpeed = 60;
+                        if (rangeCounter == 10)
+                        {
+                            //playerControl.createBomb(1, playerControl.spellProjectile[0]);
+                        }
+                    }
+
+                }
 
             }
 
@@ -149,11 +178,11 @@ public class EarthQuakeThrow : MonoBehaviour
             transform.LookAt(new Vector3(player.transform.position.x, player.transform.position.y - 1f, player.transform.position.z));
             if (boomSpellCounter == 1)
             {
-                transform.RotateAround(player.transform.position, Vector3.up, 100 * Time.deltaTime);
+                transform.RotateAround(player.transform.position, Vector3.up, boomCurveWidth * Time.deltaTime);
             }
             if (boomSpellCounter == 2)
             {
-                transform.RotateAround(player.transform.position, Vector3.up, -100 * Time.deltaTime);
+                transform.RotateAround(player.transform.position, Vector3.up, -boomCurveWidth * Time.deltaTime);
             }
             //Debug.Log(Mathf.Abs(this.transform.position.x - player.transform.position.x) + "   " + Mathf.Abs(this.transform.position.z - player.transform.position.z));
             if (Mathf.Abs(this.transform.position.x - player.transform.position.x) < minReturnDistance && Mathf.Abs(this.transform.position.z - player.transform.position.z) < minReturnDistance)

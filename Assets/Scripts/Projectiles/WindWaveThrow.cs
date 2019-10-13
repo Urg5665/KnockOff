@@ -20,6 +20,7 @@ public class WindWaveThrow : MonoBehaviour
     public bool boomReturn;
     public bool boomHover;
     public int boomSpellCounter;
+    public int boomCurveWidth;
 
     public float windForce;
     public float windKnockUp;
@@ -77,6 +78,7 @@ public class WindWaveThrow : MonoBehaviour
         boomReturn = false;
         boomHover = false;
         hoverDur = 0;
+        boomCurveWidth = 150;
     }
 
     private void OnTriggerEnter(Collider collision)
@@ -228,11 +230,11 @@ public class WindWaveThrow : MonoBehaviour
             transform.LookAt(player.transform.position);
             if (boomSpellCounter == 1)
             {
-                transform.RotateAround(player.transform.position, Vector3.up, 100 * Time.deltaTime);
+                transform.RotateAround(player.transform.position, Vector3.up, boomCurveWidth * Time.deltaTime);
             }
             if (boomSpellCounter == 2)
             {
-                transform.RotateAround(player.transform.position, Vector3.up, -100 * Time.deltaTime);
+                transform.RotateAround(player.transform.position, Vector3.up, -boomCurveWidth * Time.deltaTime);
             }
         }
 

@@ -210,11 +210,11 @@ public class PlayerControlXbox : MonoBehaviour
             }
             if (baseDashing)
             {
-                dashLength = 10;
+                dashLength = 5;
             }
             else
             {
-                dashLength = 20;
+                dashLength = 10;
             }
 
             if (this.transform.position.y < 2.5)

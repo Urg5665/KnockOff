@@ -31783,6 +31783,16 @@ PrefabInstance:
       propertyPath: m_Size.z
       value: 1.5
       objectReference: {fileID: 0}
+    - target: {fileID: 4589685495232286480, guid: 0f9ffe8302123f5419638698ccf5218d,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 152316728298911614, guid: 0f9ffe8302123f5419638698ccf5218d,
+        type: 3}
+      propertyPath: m_TagString
+      value: PlayerGatherSphere
+      objectReference: {fileID: 0}
     - target: {fileID: 2381382377881696021, guid: 0f9ffe8302123f5419638698ccf5218d,
         type: 3}
       propertyPath: m_IsActive

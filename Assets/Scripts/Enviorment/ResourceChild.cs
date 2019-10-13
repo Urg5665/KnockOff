@@ -10,5 +10,16 @@ public class ResourceChild : MonoBehaviour
         {
             Destroy(this.gameObject);
         }
+        if (collision.gameObject.tag == "PlayerGatherSphere")
+        {
+            Destroy(this.gameObject);
+        }
+        if (collision.gameObject.tag == "Player1")
+        {
+            Destroy(this.gameObject);
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
     }
 }

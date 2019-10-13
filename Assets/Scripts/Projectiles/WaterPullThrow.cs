@@ -20,6 +20,7 @@ public class WaterPullThrow : MonoBehaviour
     public bool boomHover;
     public bool boomReturn;
     public int boomSpellCounter;
+    public int boomCurveWidth;
 
     public float waterForce;
     public float waterKnockUp;
@@ -76,6 +77,7 @@ public class WaterPullThrow : MonoBehaviour
         boomReturn = false;
         boomHover = false;
         hoverDur = 0;
+        boomCurveWidth = 150;
         if (AOEspell)
         {
             audioSource.volume = 0.2f;
@@ -233,11 +235,11 @@ public class WaterPullThrow : MonoBehaviour
             transform.LookAt(player.transform.position);
             if (boomSpellCounter == 1)
             {
-                transform.RotateAround(player.transform.position, Vector3.up, 100 * Time.deltaTime);
+                transform.RotateAround(player.transform.position, Vector3.up, boomCurveWidth * Time.deltaTime);
             }
             if (boomSpellCounter == 2)
             {
-                transform.RotateAround(player.transform.position, Vector3.up, -100 * Time.deltaTime);
+                transform.RotateAround(player.transform.position, Vector3.up, -boomCurveWidth * Time.deltaTime);
             }
         }
 

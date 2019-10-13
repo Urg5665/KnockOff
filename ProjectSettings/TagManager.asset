@@ -17,6 +17,7 @@ TagManager:
   - earthRes
   - earthQuake
   - Cliffs
+  - PlayerGatherSphere
   layers:
   - Default
   - TransparentFX

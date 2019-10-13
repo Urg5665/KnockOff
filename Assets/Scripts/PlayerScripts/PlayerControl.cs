@@ -221,11 +221,11 @@ public class PlayerControl : MonoBehaviour
             }
             if (baseDashing)
             {
-                dashLength = 10;
+                dashLength = 5;
             }
             else
             {
-                dashLength = 20;
+                dashLength = 10;
             }
 
             if (this.transform.position.y < 2.5)
@@ -418,14 +418,14 @@ public class PlayerControl : MonoBehaviour
         }
         if (grounded) // movement
         {
-            if (Input.GetKey(KeyCode.A))
-                transform.Translate(Vector3.left * Time.deltaTime * speed, Space.World);
             if (Input.GetKey(KeyCode.D))
                 transform.Translate(Vector3.right * Time.deltaTime * speed, Space.World);
-            if (Input.GetKey(KeyCode.W))
-                transform.Translate(Vector3.forward * Time.deltaTime * speed, Space.World);
+            if (Input.GetKey(KeyCode.A))
+                transform.Translate(Vector3.left * Time.deltaTime * speed, Space.World);
             if (Input.GetKey(KeyCode.S))
                 transform.Translate(Vector3.back * Time.deltaTime * speed, Space.World);
+            if (Input.GetKey(KeyCode.W))
+                transform.Translate(Vector3.forward * Time.deltaTime * speed, Space.World);
 
 
         }
@@ -927,15 +927,28 @@ this.GetComponent<BoxCollider>().isTrigger = true;
     //
     //         pos.x = center.x + radius * Mathf.Sin(ang * Mathf.Deg2Rad);
     //pos.y = center.y + radius* Mathf.Cos(ang* Mathf.Deg2Rad);
+    public void createBomb(int L, GameObject bombSpell)
+    {
+        for (int i = 0; i < L; i++)
+        {
+            newSpellAOE[i] = Instantiate(spellProjectile[3], this.transform.position, spellProjectile[0].transform.rotation);
+            newSpellAOE[i].GetComponent<EarthQuakeThrow>().spellNum = spellSelected;
+            newSpellAOE[i].GetComponent<EarthQuakeThrow>().maxRange = aoeRange * 2;
+            newSpellAOE[i].GetComponent<EarthQuakeThrow>().AOEspell = true;
+            bombCircle(newSpellAOE[i], i);
+            newSpellAOE[i].GetComponent<EarthQuakeThrow>().transform.LookAt(AOEpoint);
+            newSpellAOE[i].transform.position = new Vector3(newSpellAOE[i].transform.position.x, newSpellAOE[i].transform.position.y - 1f, newSpellAOE[i].transform.position.z);
+        }
+    }
+
     public void bombCircle(GameObject parent, int i)
     {
         AOEpoint.position = parent.transform.position;
         float ang = 45 * i;
         float radius = 10;
         AOEpoint.position = new Vector3(AOEpoint.transform.position.x + (radius * Mathf.Sin(ang * Mathf.Deg2Rad)), this.transform.position.y, AOEpoint.transform.position.z + (radius * Mathf.Cos(ang * Mathf.Deg2Rad)));
-        //Debug.Log(i + ":" + AOEpoint.position);
-        //AOEpoint.position
-        /* 
+        Debug.Log(i + ":" + AOEpoint.position);
+        //AOEpoint.position 
         if (spellSelected == 0 || spellSelected == 2)
         {
             if (i == 1)
@@ -974,7 +987,7 @@ this.GetComponent<BoxCollider>().isTrigger = true;
                 AOEpoint.position = new Vector3(AOEpoint.transform.position.x, this.transform.position.y, AOEpoint.transform.position.z - (aoeWidth / 2));
             }
 
-        }*/
+        }
     }
     public void finishDash()
     {

@@ -22,6 +22,7 @@ public class FireBallThrow : MonoBehaviour
     //public GameObject[] newSpellBomb; move this to playerControl so that it is not lost on this destroy
     public bool boomHover;
     public int boomSpellCounter; // TEST try to get three things to return in a curve
+    public int boomCurveWidth;
 
     public int rangeCounter;
     public int maxRange;
@@ -41,7 +42,7 @@ public class FireBallThrow : MonoBehaviour
     public AudioClip audioClip;
     public AudioSource audioSource;
     public bool AOEspell; // check for audio source
-
+    
     public int hoverDur;
 
     private void Awake()
@@ -77,6 +78,7 @@ public class FireBallThrow : MonoBehaviour
         boomReturn = false;
         boomHover = false;
         hoverDur = 0;
+        boomCurveWidth = 150;
         if (AOEspell)
         {
             audioSource.volume = 0.2f;
@@ -287,11 +289,11 @@ public class FireBallThrow : MonoBehaviour
             transform.LookAt(player.transform.position);
             if (boomSpellCounter == 1)
             {
-                transform.RotateAround(player.transform.position, Vector3.up, 100 * Time.deltaTime);
+                transform.RotateAround(player.transform.position, Vector3.up, boomCurveWidth * Time.deltaTime);
             }
             if (boomSpellCounter == 2)
             {
-                transform.RotateAround(player.transform.position, Vector3.up, -100 * Time.deltaTime);
+                transform.RotateAround(player.transform.position, Vector3.up, -boomCurveWidth * Time.deltaTime);
             }
             //transform.LookAt(dashTarget); If you want to go to  opposing player // run this
         }
