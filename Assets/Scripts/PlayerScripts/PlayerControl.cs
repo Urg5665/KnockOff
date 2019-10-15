@@ -7,7 +7,10 @@ using UnityEngine.UI;
 public class PlayerControl : MonoBehaviour
 {
     public GameObject player1Aim;
+    public GameObject player2Aim;
     public PlayerAim playerAim;
+    public PlayerAimXbox playerAimXbox;
+
     public GameObject playerUI;
 
     public int playerNum;
@@ -28,7 +31,7 @@ public class PlayerControl : MonoBehaviour
     public GameObject[] onPlayerUIButton;
     //public PointerEventData pointerEvent;
 
-    public string[] spellPrimary; // Keywords "Fire", "Wind", "Earth" "Water" use "" for empty
+    public string[] spellPrimary; // Keywords "Fire","Earth" "Water" use "" for empty "Laser", "Meteor", "Poison" , "Plant" , "Wall" , "Wave"
     public string[] spellSecondary; // Keywords "Aoe", "Range", "Dash" "Bomb"? not as sure about the last two use "" for empty
     // Bomb: at the max range of the skill shot, the projectile explodes in 8 directions, doing its effect on each of them
     // Ideally, you could intentioanlly miss the player with the first spell and then hit with the rebound.
@@ -36,6 +39,7 @@ public class PlayerControl : MonoBehaviour
     // Fire Bomb, ranged aoe stun
     // Water Bomb, range
     // Earth Bomb , radial collapse
+    public GameObject[] triadPoints;
 
     // for swaping directions around
     public string[] tempSpellPrimary;
@@ -47,6 +51,10 @@ public class PlayerControl : MonoBehaviour
     public GameObject cardTrail;
     public GameObject newCardTrail;
     public Transform AOEpoint;
+
+    public GameObject sword; // Class
+    public GameObject newSword; // Instance
+    public bool meleeGathering;
 
     public int dashDirection; // This is to check if you are fireing a particle afterwards, if still facing the same direction
     public bool dashing;
@@ -113,7 +121,7 @@ public class PlayerControl : MonoBehaviour
         castAfterDash = false;
         dashLength = 20;
         rotateSpellChannel = 0;
-
+        meleeGathering = false;
         baseRange = 20;
         baseSpeed = 60;
         aoeRange = 18; // 30
@@ -126,7 +134,6 @@ public class PlayerControl : MonoBehaviour
         baseDashing = false;
 
         dashSpellRange = 15; // should be very close
-        aoeWidth = (Vector3.Distance(player1Aim.transform.position, transform.position))/4 ;
 
         for (int i = 0; i < 4; i++)
         {
@@ -138,11 +145,20 @@ public class PlayerControl : MonoBehaviour
         player1Aim = GameObject.Find("Player1Aim");
         fireBallID = 0;
         stunID = -1;
+        player2Aim = GameObject.Find("Player2Aim");
     }
 
     public void pickDirection()
     {
-        spellSelected = playerAim.GetComponent<PlayerAim>().spellSelected;
+        if (playerNum == 1)
+        {
+            spellSelected = playerAim.GetComponent<PlayerAim>().spellSelected;
+        }
+        if (playerNum == 2)
+        {
+            spellSelected = player2Aim.GetComponent<PlayerAimXbox>().spellSelected;
+        }
+
     }
 
     void FixedUpdate()
@@ -157,7 +173,15 @@ public class PlayerControl : MonoBehaviour
 
         pickDirection();
         dashDirectionTime--;
-        aoeWidth = (Vector3.Distance(player1Aim.transform.position, transform.position)) / 2;
+        if (playerNum == 1)
+        {
+            aoeWidth = (Vector3.Distance(player1Aim.transform.position, transform.position)) / 2;
+        }
+        if (playerNum == 2)
+        {
+            aoeWidth = (Vector3.Distance(player2Aim.transform.position, transform.position)) / 2;
+        }
+
 
         //speed = maxSpeed - (slowDownPerCard * cardsThrown); // apply slow for each card in play
         //Debug.Log("speed" + speed);
@@ -213,7 +237,7 @@ public class PlayerControl : MonoBehaviour
             dashingTime++;
             if (AOEKnockBack)
             {
-                transform.Translate(Vector3.back * Time.deltaTime * speed * 1.5f, Space.Self);
+                //transform.Translate(Vector3.back * Time.deltaTime * speed * 1.5f, Space.Self);
             }
             if (!AOEKnockBack)
             {
@@ -221,7 +245,7 @@ public class PlayerControl : MonoBehaviour
             }
             if (baseDashing)
             {
-                dashLength = 5;
+                dashLength = 10;
             }
             else
             {
@@ -247,188 +271,17 @@ public class PlayerControl : MonoBehaviour
         }
         if (castAfterDash)
         {
-            castAfterDash = false;
-            if(spellPrimary[dashDirection] == "Fire" && spellSecondary[dashDirection] == "Dash")
-            {
-                newSpell = Instantiate(spellProjectile[0], this.transform.position, spellProjectile[0].transform.rotation);
-                newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - .25f, newSpell.transform.position.z);
-                newSpell.GetComponent<FireBallThrow>().spellNum = dashDirection;
-                newSpell.GetComponent<FireBallThrow>().maxRange = dashSpellRange;
-                newSpell.GetComponent<FireBallThrow>().dashSpell = true;
-                fireBallID++;
-                newSpell.GetComponent<FireBallThrow>().fireBallID = fireBallID;
-                spellPrimary[dashDirection] = "";
-                spellSecondary[dashDirection] = "";
-                canCast[dashDirection] = true;
-                //print("FireballID:" + fireBallID);
-            }
-            if (spellPrimary[dashDirection] == "Wind" && spellSecondary[dashDirection] == "Dash")
-            {
-                newSpell = Instantiate(spellProjectile[1], this.transform.position, spellProjectile[0].transform.rotation);
-                newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - .25f, newSpell.transform.position.z);
-                newSpell.GetComponent<WindWaveThrow>().spellNum = dashDirection;
-                newSpell.GetComponent<WindWaveThrow>().maxRange = dashSpellRange;
-                newSpell.GetComponent<WindWaveThrow>().dashSpell = true;
-                spellPrimary[dashDirection] = "";
-                spellSecondary[dashDirection] = "";
-                canCast[dashDirection] = true;
-            }
-            if (spellPrimary[dashDirection] == "Water" && spellSecondary[dashDirection] == "Dash")
-            {
-                newSpell = Instantiate(spellProjectile[2], this.transform.position, spellProjectile[0].transform.rotation);
-                newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - .25f, newSpell.transform.position.z);
-                newSpell.GetComponent<WaterPullThrow>().spellNum = dashDirection;
-                newSpell.GetComponent<WaterPullThrow>().maxRange = dashSpellRange;
-                newSpell.GetComponent<WaterPullThrow>().dashSpell = true;
-                spellPrimary[dashDirection] = "";
-                spellSecondary[dashDirection] = "";
-                canCast[dashDirection] = true;
-            }
-            if (spellPrimary[dashDirection] == "Earth" && spellSecondary[dashDirection] == "Dash")
-            {
-                newSpell = Instantiate(spellProjectile[3], this.transform.position, spellProjectile[0].transform.rotation);
-                newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - 1f, newSpell.transform.position.z);
-                newSpell.GetComponent<EarthQuakeThrow>().spellNum = dashDirection;
-                newSpell.GetComponent<EarthQuakeThrow>().maxRange = dashSpellRange * 2;
-                newSpell.GetComponent<EarthQuakeThrow>().dashSpell = true;
-                spellPrimary[dashDirection] = "";
-                spellSecondary[dashDirection] = "";
-                canCast[dashDirection] = true;
-            }
-
-
+            CastAfterDash();
         }
-        rotateSpellRing.fillAmount = (float)rotateSpellChannel / 30;
-        //Debug.Log(rotateSpellChannel); 
-        if (Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.E)) // Switch Spells 
+        if (playerNum == 1)
         {
-            if (Input.GetKey(KeyCode.Q))
-            {
-                rotateSpellRing.GetComponent<Image>().fillClockwise = false;
-            }
-            else if (Input.GetKey(KeyCode.E))
-            {
-                rotateSpellRing.GetComponent<Image>().fillClockwise = true;
-            }
-
-            for (int i = 0; i < 4; i++)
-            {
-                canCast[i] = false;
-            }
-            speed = 0.0f;
-            rotateSpellChannel++;
-            if (rotateSpellChannel == 30 && Input.GetKey(KeyCode.Q))
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    tempSpellPrimary[i] = spellPrimary[i];
-                    tempSpellSecondary[i] = spellSecondary[i];
-                }
-                for (int i = 0; i < 3; i++)
-                {
-                    spellPrimary[i] = tempSpellPrimary[i + 1];
-                    spellSecondary[i] = tempSpellSecondary[i + 1];
-                }
-                spellPrimary[3] = tempSpellPrimary[0];
-                spellSecondary[3] = tempSpellSecondary[0];
-            }
-            if (rotateSpellChannel == 30 && Input.GetKey(KeyCode.E))
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    tempSpellPrimary[i] = spellPrimary[i];
-                    tempSpellSecondary[i] = spellSecondary[i];
-                }
-                for (int i = 0; i < 3; i++)
-                {
-                    spellPrimary[i + 1] = tempSpellPrimary[i];
-                    spellSecondary[i + 1] = tempSpellSecondary[i];
-                }
-                spellPrimary[0] = tempSpellPrimary[3];
-                spellSecondary[0] = tempSpellSecondary[3];
-            }
-
+            KeyboardInput();
         }
-        else if (Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.E))
+        else if (playerNum == 2)
         {
-            rotateSpellChannel = 0;
-            rotateSpellRing.fillAmount = 0;
-            speed = 10.0f;
-            for (int i = 0; i < 4; i++)
-            {
-                canCast[i] = true;
-            }
+            ContollerInput();
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && !dashing && baseDashCooldown <= 0) // Base Dash
-        {
-            castAfterDash = false;
-            baseDashCooldown = 200;
-            dashing = true;
-            dashDirection = spellSelected;
-            dashAim = new Vector3(player1Aim.transform.position.x, player1Aim.transform.position.y, player1Aim.transform.position.z);
-            dashDirectionTime = 75;
-            transform.LookAt(dashAim);
-            baseDashing = true;
-            
-            if (this.transform.position.y < 2.5)
-            {
-                rb.AddForce(Vector3.up * waterDashForceUp);
-            }
-            else
-            {
-                rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
-            }
-
-            this.GetComponent<BoxCollider>().isTrigger = true;
-        }
-
-
-        // Card Casting Commands
-        if (Input.GetMouseButtonDown(0) && cardsThrown < 4 && canCast[spellSelected] && spellSecondary[spellSelected] == "") // Shoot Card
-        {
-            CardGather();
-        }
-        if (Input.GetMouseButtonDown(0) && cardsThrown < 4 && canCast[spellSelected] && spellSecondary[spellSelected] != "")  // Disabel Shooitng Card because spell is maxed
-        {
-            //Debug.Log("Spell Maxed - Cast it!");
-        }
-
-
-        // Spell Casting Commands
-        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "") // You Have no Spell
-        {
-            //Debug.Log("No Spell Avaliable");
-        }
-        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Fire") // Shoot Fireball
-        {
-            Fireball();
-        }
-        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Wind") // Shoot Wind Knock
-        {
-            WindKnockback();
-        }
-        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Water") // Shoot Wind Knock
-        {
-            WaterPull();
-        }
-        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Earth") // Shoot Wind Knock
-        {
-            EarthQuake();
-        }
-        if (grounded) // movement
-        {
-            if (Input.GetKey(KeyCode.D))
-                transform.Translate(Vector3.right * Time.deltaTime * speed, Space.World);
-            if (Input.GetKey(KeyCode.A))
-                transform.Translate(Vector3.left * Time.deltaTime * speed, Space.World);
-            if (Input.GetKey(KeyCode.S))
-                transform.Translate(Vector3.back * Time.deltaTime * speed, Space.World);
-            if (Input.GetKey(KeyCode.W))
-                transform.Translate(Vector3.forward * Time.deltaTime * speed, Space.World);
-
-
-        }
         //Debug.Log(transform.position.y + "  " + grounded);
         if (this.transform.position.y < 2.5f || this.transform.position.y > 3f)
         {
@@ -499,6 +352,36 @@ public class PlayerControl : MonoBehaviour
         newCardTrail.GetComponent<CardTrailThrow>().cardTrailTarget = newCard;
         canCast[spellSelected] = false;
     }
+    private void MeleeGather()
+    {        
+        if (spellSelected == 0)
+        {
+            newSword = Instantiate(sword, triadPoints[0].transform.position, sword.transform.rotation);
+            newSword.GetComponent<MeleeAbility>().target = triadPoints[3];
+            newSword.transform.position = new Vector3(triadPoints[0].transform.position.x, triadPoints[0].transform.position.y - .25f, triadPoints[0].transform.position.z);
+        }
+        else if (spellSelected == 1)
+        {
+            newSword = Instantiate(sword, triadPoints[1].transform.position, sword.transform.rotation);
+            newSword.GetComponent<MeleeAbility>().target = triadPoints[0];
+            newSword.transform.position = new Vector3(triadPoints[1].transform.position.x, triadPoints[1].transform.position.y - .25f, triadPoints[1].transform.position.z);
+        }
+        else if (spellSelected == 2)
+        {
+            newSword = Instantiate(sword, triadPoints[2].transform.position, sword.transform.rotation);
+            newSword.GetComponent<MeleeAbility>().target = triadPoints[1];
+            newSword.transform.position = new Vector3(triadPoints[2].transform.position.x, triadPoints[2].transform.position.y - .25f, triadPoints[2].transform.position.z);
+        }
+        else if (spellSelected == 3)
+        {
+            newSword = Instantiate(sword, triadPoints[3].transform.position, sword.transform.rotation);
+            newSword.GetComponent<MeleeAbility>().target = triadPoints[2];
+            newSword.transform.position = new Vector3(triadPoints[3].transform.position.x, triadPoints[3].transform.position.y - .25f, triadPoints[3].transform.position.z);
+        }
+        newSword.GetComponent<MeleeAbility>().swordNum = spellSelected;
+        meleeGathering = true;
+    }
+
     private void Fireball()
     {
         if (spellSecondary[spellSelected] == "")
@@ -1005,6 +888,263 @@ this.GetComponent<BoxCollider>().isTrigger = true;
         }
         baseDashing = false;
 
+    }
+    public void CastAfterDash()
+    {
+        castAfterDash = false;
+        if (spellPrimary[dashDirection] == "Fire" && spellSecondary[dashDirection] == "Dash")
+        {
+            newSpell = Instantiate(spellProjectile[0], this.transform.position, spellProjectile[0].transform.rotation);
+            newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - .25f, newSpell.transform.position.z);
+            newSpell.GetComponent<FireBallThrow>().spellNum = dashDirection;
+            newSpell.GetComponent<FireBallThrow>().maxRange = dashSpellRange;
+            newSpell.GetComponent<FireBallThrow>().dashSpell = true;
+            fireBallID++;
+            newSpell.GetComponent<FireBallThrow>().fireBallID = fireBallID;
+            spellPrimary[dashDirection] = "";
+            spellSecondary[dashDirection] = "";
+            canCast[dashDirection] = true;
+            //print("FireballID:" + fireBallID);
+        }
+        if (spellPrimary[dashDirection] == "Wind" && spellSecondary[dashDirection] == "Dash")
+        {
+            newSpell = Instantiate(spellProjectile[1], this.transform.position, spellProjectile[1].transform.rotation);
+            newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - .25f, newSpell.transform.position.z);
+            newSpell.GetComponent<WindWaveThrow>().spellNum = dashDirection;
+            newSpell.GetComponent<WindWaveThrow>().maxRange = dashSpellRange;
+            newSpell.GetComponent<WindWaveThrow>().dashSpell = true;
+            spellPrimary[dashDirection] = "";
+            spellSecondary[dashDirection] = "";
+            canCast[dashDirection] = true;
+        }
+        if (spellPrimary[dashDirection] == "Water" && spellSecondary[dashDirection] == "Dash")
+        {
+            newSpell = Instantiate(spellProjectile[2], this.transform.position, spellProjectile[0].transform.rotation);
+            newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - .25f, newSpell.transform.position.z);
+            newSpell.GetComponent<WaterPullThrow>().spellNum = dashDirection;
+            newSpell.GetComponent<WaterPullThrow>().maxRange = dashSpellRange;
+            newSpell.GetComponent<WaterPullThrow>().dashSpell = true;
+            spellPrimary[dashDirection] = "";
+            spellSecondary[dashDirection] = "";
+            canCast[dashDirection] = true;
+        }
+        if (spellPrimary[dashDirection] == "Earth" && spellSecondary[dashDirection] == "Dash")
+        {
+            newSpell = Instantiate(spellProjectile[3], this.transform.position, spellProjectile[0].transform.rotation);
+            newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - 1f, newSpell.transform.position.z);
+            newSpell.GetComponent<EarthQuakeThrow>().spellNum = dashDirection;
+            newSpell.GetComponent<EarthQuakeThrow>().maxRange = dashSpellRange * 2;
+            newSpell.GetComponent<EarthQuakeThrow>().dashSpell = true;
+            spellPrimary[dashDirection] = "";
+            spellSecondary[dashDirection] = "";
+            canCast[dashDirection] = true;
+        }
+    }
+    public void KeyboardInput()
+    {
+
+
+        // Card Casting Commands
+        if (Input.GetMouseButtonDown(0) && !meleeGathering && cardsThrown < 4 && canCast[spellSelected] && spellSecondary[spellSelected] == "") // Shoot Card
+        {
+            //CardGather();
+            MeleeGather();
+        }
+        if (Input.GetMouseButtonDown(0) && cardsThrown < 4 && canCast[spellSelected] && spellSecondary[spellSelected] != "")  // Disabel Shooitng Card because spell is maxed
+        {
+            //Debug.Log("Spell Maxed - Cast it!");
+        }
+
+
+        // Spell Casting Commands
+        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "") // You Have no Spell
+        {
+            //Debug.Log("No Spell Avaliable");
+        }
+        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Fire") // Shoot Fireball
+        {
+            Fireball();
+        }
+        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Wind") // Shoot Wind Knock
+        {
+            WindKnockback();
+        }
+        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Water") // Shoot Wind Knock
+        {
+            WaterPull();
+        }
+        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Earth") // Shoot Wind Knock
+        {
+            EarthQuake();
+        }
+        if (grounded) // movement
+        {
+            if (Input.GetKey(KeyCode.D))
+                transform.Translate(Vector3.right * Time.deltaTime * speed, Space.World);
+            if (Input.GetKey(KeyCode.A))
+                transform.Translate(Vector3.left * Time.deltaTime * speed, Space.World);
+            if (Input.GetKey(KeyCode.S))
+                transform.Translate(Vector3.back * Time.deltaTime * speed, Space.World);
+            if (Input.GetKey(KeyCode.W))
+                transform.Translate(Vector3.forward * Time.deltaTime * speed, Space.World);
+        }
+        rotateSpellRing.fillAmount = (float)rotateSpellChannel / 30;
+        //Debug.Log(rotateSpellChannel); 
+        if (Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.E)) // Switch Spells 
+        {
+            if (Input.GetKey(KeyCode.Q))
+            {
+                rotateSpellRing.GetComponent<Image>().fillClockwise = false;
+            }
+            else if (Input.GetKey(KeyCode.E))
+            {
+                rotateSpellRing.GetComponent<Image>().fillClockwise = true;
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                canCast[i] = false;
+            }
+            speed = 0.0f;
+            rotateSpellChannel++;
+            if (rotateSpellChannel == 30 && Input.GetKey(KeyCode.Q))
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    tempSpellPrimary[i] = spellPrimary[i];
+                    tempSpellSecondary[i] = spellSecondary[i];
+                }
+                for (int i = 0; i < 3; i++)
+                {
+                    spellPrimary[i] = tempSpellPrimary[i + 1];
+                    spellSecondary[i] = tempSpellSecondary[i + 1];
+                }
+                spellPrimary[3] = tempSpellPrimary[0];
+                spellSecondary[3] = tempSpellSecondary[0];
+            }
+            if (rotateSpellChannel == 30 && Input.GetKey(KeyCode.E))
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    tempSpellPrimary[i] = spellPrimary[i];
+                    tempSpellSecondary[i] = spellSecondary[i];
+                }
+                for (int i = 0; i < 3; i++)
+                {
+                    spellPrimary[i + 1] = tempSpellPrimary[i];
+                    spellSecondary[i + 1] = tempSpellSecondary[i];
+                }
+                spellPrimary[0] = tempSpellPrimary[3];
+                spellSecondary[0] = tempSpellSecondary[3];
+            }
+
+        }
+        else if (Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.E))
+        {
+            rotateSpellChannel = 0;
+            rotateSpellRing.fillAmount = 0;
+            speed = 10.0f;
+            for (int i = 0; i < 4; i++)
+            {
+                canCast[i] = true;
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && !dashing && baseDashCooldown <= 0) // Base Dash
+        {
+            castAfterDash = false;
+            baseDashCooldown = 200;
+            dashing = true;
+            dashDirection = spellSelected;
+            dashAim = new Vector3(player1Aim.transform.position.x, player1Aim.transform.position.y, player1Aim.transform.position.z);
+            dashDirectionTime = 75;
+            transform.LookAt(dashAim);
+            baseDashing = true;
+
+            if (this.transform.position.y < 2.5)
+            {
+                rb.AddForce(Vector3.up * waterDashForceUp);
+            }
+            else
+            {
+                rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
+            }
+
+            this.GetComponent<BoxCollider>().isTrigger = true;
+        }
+    }
+
+    public void ContollerInput()
+    {
+        if (Input.GetButton("Fire1") == true && !dashing && baseDashCooldown <= 0) // Base Dash
+        {
+            castAfterDash = false;
+            baseDashCooldown = 200;
+            dashing = true;
+            dashDirection = spellSelected;
+            dashAim = new Vector3(player2Aim.transform.position.x, player2Aim.transform.position.y, player2Aim.transform.position.z);
+            dashDirectionTime = 75;
+            transform.LookAt(dashAim);
+            baseDashing = true;
+
+            if (this.transform.position.y < 2.5)
+            {
+                rb.AddForce(Vector3.up * waterDashForceUp);
+            }
+            else
+            {
+                rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
+            }
+
+            this.GetComponent<BoxCollider>().isTrigger = true;
+        }
+        if (Input.GetAxis("CardThrow") == 1 && cardsThrown < 4 && canCast[spellSelected] && spellSecondary[spellSelected] == "") // Shoot Card
+        {
+            CardGather();
+        }
+        if (Input.GetAxis("CardThrow") == 1 && cardsThrown < 4 && canCast[spellSelected] && spellSecondary[spellSelected] != "")  // Disabel Shooitng Card because spell is maxed
+        {
+            //Debug.Log("Spell Maxed - Cast it!");
+        }
+
+        // Should really be Input.GetAxis("SpellThrow") == 1 but my controller trigger has not been working so for no it is Button A
+        // Spell Casting Commands
+        if (Input.GetButton("Fire1") == true && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "") // You Have no Spell
+        {
+            //Debug.Log("No Spell Avaliable");
+        }
+        if ((Input.GetAxis("SpellThrow") == 1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Fire") // Shoot Fireball
+        {
+            Fireball();
+        }
+        if ((Input.GetAxis("SpellThrow") == 1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Wind") // Shoot Wind Knock
+        {
+            WindKnockback();
+        }
+        if ((Input.GetAxis("SpellThrow") == 1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Water") // Shoot Wind Knock
+        {
+            WaterPull();
+        }
+        if ((Input.GetAxis("SpellThrow") == 1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Earth") // Shoot Wind Knock
+        {
+            EarthQuake();
+        }
+
+        //Debug.Log(airBorn);
+
+        if (grounded) // movement
+        {
+            if (Input.GetAxis("Horizontal") > 0)
+                transform.Translate(Vector3.right * Time.deltaTime * speed, Space.World);
+            if (Input.GetAxis("Horizontal") < 0)
+                transform.Translate(Vector3.left * Time.deltaTime * speed, Space.World);
+            if (Input.GetAxis("Vertical") < 0)
+                transform.Translate(Vector3.forward * Time.deltaTime * speed, Space.World);
+            if (Input.GetAxis("Vertical") > 0)
+                transform.Translate(Vector3.back * Time.deltaTime * speed, Space.World);
+
+
+        }
     }
 }
        

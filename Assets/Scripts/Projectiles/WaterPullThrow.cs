@@ -66,8 +66,8 @@ public class WaterPullThrow : MonoBehaviour
         transform.LookAt(playerAim.transform);
 
         spellDir = this.gameObject.transform.forward;
-        waterForce = 1000; //1250
-        waterKnockUp = 300;//250
+        waterForce = 1100; //1250
+        waterKnockUp = 200;//250
         hitPlayer = false;
         throwSpeed = 60;
         rangeCounter = 0;
@@ -124,6 +124,7 @@ public class WaterPullThrow : MonoBehaviour
         if (!hitPlayer && playerInt == 1 && collision.gameObject.tag == "Player2" )
         {
             collision.gameObject.GetComponent<PlayerControlXbox>().finishDash();
+            collision.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 0f);
             collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * waterForce * -1); // Knock Back
             if ((collision.gameObject.GetComponent<PlayerControlXbox>().stunLength > 0))
             {
@@ -142,7 +143,7 @@ public class WaterPullThrow : MonoBehaviour
 
             hitSlow = 0;
             StartCoroutine(cameraMove.Shake(.15f, .5f));
-            cameraMove.player2Hit = true;
+            //cameraMove.player2Hit = true;
             hitEffectInGame = Instantiate(hitEffect);
             //hitEffectInGame.transform.position = this.transform.position;
             hitEffectInGame.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
@@ -150,6 +151,7 @@ public class WaterPullThrow : MonoBehaviour
         if (!hitPlayer && playerInt == 2 && collision.gameObject.tag == "Player1")
         {
             collision.gameObject.GetComponent<PlayerControl>().finishDash();
+            collision.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 0f);
             collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * waterForce * -1); // Knock Back
             if (collision.gameObject.GetComponent<PlayerControl>().stunLength > 0)
             {
@@ -168,7 +170,7 @@ public class WaterPullThrow : MonoBehaviour
             }
             hitSlow = 0;
             StartCoroutine(cameraMove.Shake(.15f, .5f));
-            cameraMove.player1Hit = true;
+            //cameraMove.player1Hit = true;
             hitEffectInGame = Instantiate(hitEffect);
             //hitEffectInGame.transform.position = this.transform.position;
             hitEffectInGame.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);

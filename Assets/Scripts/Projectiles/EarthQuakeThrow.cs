@@ -137,7 +137,7 @@ public class EarthQuakeThrow : MonoBehaviour
             if (!boomHover)
             {
                 transform.Translate(Vector3.forward * Time.deltaTime * throwSpeed, Space.Self);
-                transform.Translate(Vector3.up * Time.deltaTime * lobSpeed, Space.World);
+                //transform.Translate(Vector3.up * Time.deltaTime * lobSpeed, Space.World);
                 lobSpeed -= lobDec;
                 // some reall sloppy player specific stuff dont replicate
                 if (playerInt == 1)

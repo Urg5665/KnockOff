@@ -28,6 +28,10 @@ public class FireBallThrow : MonoBehaviour
     public int maxRange;
     public int bombRange;
 
+    public float fireForce;
+    public float fireKnockUp;
+    public Vector3 spellDir;
+
     public CameraMove cameraMove;
 
     public Vector3 dashTarget;
@@ -66,6 +70,9 @@ public class FireBallThrow : MonoBehaviour
 
         maxRange = 10;
         transform.LookAt(playerAim.transform);
+        spellDir = this.gameObject.transform.forward;
+        fireForce = 700;
+        fireKnockUp = 200;
         throwSpeed = 60; // 30
         rangeCounter = 0;
         cameraMove = GameObject.Find("MainCamera").GetComponent<CameraMove>();
@@ -74,6 +81,7 @@ public class FireBallThrow : MonoBehaviour
         audioSource = this.GetComponent<AudioSource>();
         bombRange = 20;
         //bombSpell = false;
+        hitPlayer = false;
         boomSpell = false;
         boomReturn = false;
         boomHover = false;
@@ -119,106 +127,58 @@ public class FireBallThrow : MonoBehaviour
             Destroy(this.gameObject);
         }
 
-
-        if (playerInt == 1 && collision.gameObject.tag == "Player2")
+        if (!hitPlayer && playerInt == 1 && collision.gameObject.tag == "Player2")
         {
-            //collision.gameObject.GetComponent<PlayerControlXbox>().speed = 0;
-            
-            StartCoroutine(cameraMove.Shake(.3f, .5f)); // .3f , .5f
-            // Kill
-            //collision.gameObject.transform.position = 
-            //   new Vector3(collision.gameObject.transform.position.x, collision.gameObject.transform.position.y - 6, collision.gameObject.transform.position.z);
-            // Stun w kill
-            if (collision.gameObject.GetComponent<PlayerControlXbox>().stunLength > 0 && collision.gameObject.GetComponent<PlayerControlXbox>().stunID != fireBallID) // yes stuned
+            collision.gameObject.GetComponent<PlayerControlXbox>().finishDash();
+            collision.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 0f);
+            collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * fireForce); // Knock Back
+            Debug.Log(this.gameObject.transform.forward); 
+            if ((collision.gameObject.GetComponent<PlayerControlXbox>().stunLength > 0))
             {
-                //print("p2 Killed:" + fireBallID);
-                collision.gameObject.transform.position =
-                new Vector3(collision.gameObject.transform.position.x, collision.gameObject.transform.position.y - 6, collision.gameObject.transform.position.z);
+                collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * fireForce / 2); // Double If Stuned
             }
-            if (collision.gameObject.GetComponent<PlayerControlXbox>().stunLength > 0 && collision.gameObject.GetComponent<PlayerControlXbox>().stunID == fireBallID) // yes stuned
-            {
-                collision.gameObject.GetComponent<PlayerControlXbox>().speed = 0;
-                collision.gameObject.GetComponent<PlayerControlXbox>().stunID = fireBallID;
-                collision.gameObject.GetComponent<PlayerControlXbox>().stunLength = 100;
-                collision.gameObject.GetComponent<PlayerControlXbox>().dirStun = spellNum;
-                collision.GetComponent<BoxCollider>().isTrigger = false;
-                collision.gameObject.GetComponent<PlayerControlXbox>().dashing = false; // can stop someone mid dash?
-                collision.gameObject.GetComponent<PlayerControlXbox>().finishDash();
-                //print("p2 Stuned:" + fireBallID);
-            }
-            if (collision.gameObject.GetComponent<PlayerControlXbox>().stunLength <= 0) // not Stuned
-            {
-                collision.gameObject.GetComponent<PlayerControlXbox>().speed = 0;
-                collision.gameObject.GetComponent<PlayerControlXbox>().stunID = fireBallID;
-                collision.gameObject.GetComponent<PlayerControlXbox>().stunLength = 100;
-                collision.gameObject.GetComponent<PlayerControlXbox>().dirStun = spellNum;
-                collision.GetComponent<BoxCollider>().isTrigger = false;
-                collision.gameObject.GetComponent<PlayerControlXbox>().dashing = false; // can stop someone mid dash?
-                collision.gameObject.GetComponent<PlayerControlXbox>().finishDash();               
-                //print("p2 Stuned:" + fireBallID);
-            }
-
+            collision.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * fireKnockUp); // Knock Up
+            collision.GetComponent<BoxCollider>().isTrigger = true;
+            //Destroy(this.gameObject);
             if (!boomReturn)
             {
                 playerControl.canCast[spellNum] = true;
                 playerControl.spellPrimary[spellNum] = "";
                 playerControl.spellSecondary[spellNum] = ""; // Reset Spell to empty
             }
+            hitPlayer = true;
+            hitSlow = 0;
+            StartCoroutine(cameraMove.Shake(.15f, .5f));
+            //cameraMove.player2Hit = true;
+            hitEffectInGame = Instantiate(hitEffect);
+            //hitEffectInGame.transform.position = this.transform.position;
+            hitEffectInGame.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
 
-           hitEffectInGame = Instantiate(hitEffect);
-           //hitEffectInGame.transform.position = this.transform.position;
-           hitEffectInGame.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
-           hitSlow = 0;
-           //Destroy(this.gameObject);
         }
-        if (playerInt == 2 && collision.gameObject.tag == "Player1")
+        if (!hitPlayer && playerInt == 2 && collision.gameObject.tag == "Player1")
         {
-            StartCoroutine(cameraMove.Shake(.3f, .5f));
-            //collision.gameObject.transform.position =
-            //    new Vector3(collision.gameObject.transform.position.x, collision.gameObject.transform.position.y - 6, collision.gameObject.transform.position.z);
-            // Stun
-
-            if (collision.gameObject.GetComponent<PlayerControl>().stunLength > 0 && collision.gameObject.GetComponent<PlayerControl>().stunID != fireBallID ) // yes stuned , ignore other aoe spells
+            collision.gameObject.GetComponent<PlayerControl>().finishDash();
+            collision.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0f,0f,0f);
+            collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * fireForce); // Knock Back
+            if ((collision.gameObject.GetComponent<PlayerControl>().stunLength > 0))
             {
-                //print("p1 Killed:" + fireBallID);
-                collision.gameObject.transform.position =
-                new Vector3(collision.gameObject.transform.position.x, collision.gameObject.transform.position.y - 6, collision.gameObject.transform.position.z);
-
+                collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * fireForce / 2); // Double If Stuned
             }
-            if (collision.gameObject.GetComponent<PlayerControl>().stunLength > 0 && collision.gameObject.GetComponent<PlayerControl>().stunID == fireBallID) // re stunned
-            {
-                collision.gameObject.GetComponent<PlayerControl>().speed = 0;
-                collision.gameObject.GetComponent<PlayerControl>().stunID = fireBallID; // this is what the player remebers as stun
-                collision.gameObject.GetComponent<PlayerControl>().stunLength = 100;
-                collision.gameObject.GetComponent<PlayerControl>().dirStun = spellNum;
-                collision.GetComponent<BoxCollider>().isTrigger = false;
-                collision.gameObject.GetComponent<PlayerControl>().dashing = false; // can stop someone mid dash?
-                collision.gameObject.GetComponent<PlayerControl>().finishDash();
-
-            }
-            if (collision.gameObject.GetComponent<PlayerControl>().stunLength <= 0) // not Stuned
-            {
-                //print("p1 Stuned:" + fireBallID);
-                collision.gameObject.GetComponent<PlayerControl>().speed = 0;
-                collision.gameObject.GetComponent<PlayerControl>().stunID = fireBallID; // this is what the player remebers as stun
-                collision.gameObject.GetComponent<PlayerControl>().stunLength = 100;
-                collision.gameObject.GetComponent<PlayerControl>().dirStun = spellNum;
-                collision.GetComponent<BoxCollider>().isTrigger = false;
-                collision.gameObject.GetComponent<PlayerControl>().dashing = false; // can stop someone mid dash?
-                collision.gameObject.GetComponent<PlayerControl>().finishDash();
-            }
+            collision.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * fireKnockUp); // Knock Up
+            collision.GetComponent<BoxCollider>().isTrigger = true;
+            hitPlayer = true;
             if (!boomReturn)
             {
                 playerControlXbox.canCast[spellNum] = true;
                 playerControlXbox.spellPrimary[spellNum] = "";
                 playerControlXbox.spellSecondary[spellNum] = ""; // Reset Spell to empty
             }
-
+            hitSlow = 0;
+            StartCoroutine(cameraMove.Shake(.15f, .5f));
+            //cameraMove.player1Hit = true;
             hitEffectInGame = Instantiate(hitEffect);
             //hitEffectInGame.transform.position = this.transform.position;
             hitEffectInGame.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
-            hitSlow = 0;
-            //Destroy(this.gameObject);
 
         }
 
@@ -261,16 +221,15 @@ public class FireBallThrow : MonoBehaviour
             dashTarget = GameObject.Find("Player1").transform.position;
         }
 
-
-        if (!dashSpell)
+        if (dashSpell)
         {
-            if (!boomHover)
-            {
-                transform.Translate(Vector3.forward * Time.deltaTime * throwSpeed, Space.Self);
-                //transform.RotateAround(player.transform.position, Vector3.up, 500 * Time.deltaTime);// Enable with forward for cool tranlaste effect
-            }
-
+            transform.LookAt(dashTarget);
         }
+        if (!boomHover)
+        {
+            transform.Translate(Vector3.forward * Time.deltaTime * throwSpeed, Space.Self);
+        }
+
         if (dashSpell)
         {
             if (playerInt == 1)
@@ -357,6 +316,7 @@ public class FireBallThrow : MonoBehaviour
             {
                 boomHover = false;
                 boomReturn = true;
+                hitPlayer = false;
                 audioSource.Play();
             }
         }

@@ -93,7 +93,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 2.5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &3160040401891283962
 MonoBehaviour:
@@ -120,6 +120,8 @@ MonoBehaviour:
   boomSpell: 0
   boomHover: 0
   boomReturn: 0
+  boomSpellCounter: 0
+  boomCurveWidth: 0
   waterForce: 0
   waterKnockUp: 0
   spellDir: {x: 0, y: 0, z: 0}
@@ -132,6 +134,8 @@ MonoBehaviour:
   hitEffect: {fileID: 1545252266986714, guid: a40a2978f1d8e62408deda7dea344d26, type: 3}
   hitEffectInGame: {fileID: 0}
   audioSource: {fileID: 2981369627520431573}
+  AOEspell: 0
+  hoverDur: 0
 --- !u!82 &2981369627520431573
 AudioSource:
   m_ObjectHideFlags: 0

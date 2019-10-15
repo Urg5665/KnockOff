@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PlayerControlXbox : MonoBehaviour
 {
     public GameObject player2Aim;
-    //public PlayerAim playerAim;
+    public PlayerAimXbox playerAimXbox;
 
     public int playerNum;
     public float speed;
@@ -38,6 +38,11 @@ public class PlayerControlXbox : MonoBehaviour
     public GameObject newCard;
     public GameObject cardTrail;
     public GameObject newCardTrail;
+    public GameObject sword;
+    public GameObject newSword;
+    public GameObject[] triadPoints;
+    public bool meleeGathering;
+
     public Transform AOEpoint;
 
     public int dashDirection; // This is to check if you are fireing a particle afterwards, if still facing the same direction
@@ -125,6 +130,7 @@ public class PlayerControlXbox : MonoBehaviour
         }
         slowDownPerCard = 2.5f;
         player2Aim = GameObject.Find("Player2Aim");
+        meleeGathering = false;
     }
 
     public void pickDirection()
@@ -202,7 +208,7 @@ public class PlayerControlXbox : MonoBehaviour
             dashingTime++;
             if (AOEKnockBack)
             {
-                transform.Translate(Vector3.back * Time.deltaTime * speed * 1.5f, Space.Self);
+                //transform.Translate(Vector3.back * Time.deltaTime * speed * 1.5f, Space.Self);
             }
             if (!AOEKnockBack)
             {
@@ -210,7 +216,7 @@ public class PlayerControlXbox : MonoBehaviour
             }
             if (baseDashing)
             {
-                dashLength = 5;
+                dashLength = 10;
             }
             else
             {
@@ -382,9 +388,10 @@ public class PlayerControlXbox : MonoBehaviour
 
             this.GetComponent<BoxCollider>().isTrigger = true;
         }
-        if (Input.GetAxis("CardThrow") == 1 && cardsThrown < 4 && canCast[spellSelected] && spellSecondary[spellSelected] == "" ) // Shoot Card
+        if (Input.GetAxis("CardThrow") == 1 && !meleeGathering && cardsThrown < 4 && canCast[spellSelected] && spellSecondary[spellSelected] == "" ) // Shoot Card
         {
-            CardGather();
+            //CardGather();
+            MeleeGather();
         }
         if (Input.GetAxis("CardThrow") == 1 && cardsThrown < 4 && canCast[spellSelected] && spellSecondary[spellSelected] != "")  // Disabel Shooitng Card because spell is maxed
         {
@@ -497,6 +504,35 @@ public class PlayerControlXbox : MonoBehaviour
         newCardTrail.transform.position = new Vector3(newCard.transform.position.x, newCard.transform.position.y - .25f, newCard.transform.position.z);
         newCardTrail.GetComponent<CardTrailThrow>().cardTrailTarget = newCard;
         canCast[spellSelected] = false;
+    }
+    private void MeleeGather()
+    {
+        if (spellSelected == 0)
+        {
+            newSword = Instantiate(sword, triadPoints[0].transform.position, sword.transform.rotation);
+            newSword.GetComponent<MeleeAbility>().target = triadPoints[3];
+            newSword.transform.position = new Vector3(triadPoints[0].transform.position.x, triadPoints[0].transform.position.y - .25f, triadPoints[0].transform.position.z);
+        }
+        else if (spellSelected == 1)
+        {
+            newSword = Instantiate(sword, triadPoints[1].transform.position, sword.transform.rotation);
+            newSword.GetComponent<MeleeAbility>().target = triadPoints[0];
+            newSword.transform.position = new Vector3(triadPoints[1].transform.position.x, triadPoints[1].transform.position.y - .25f, triadPoints[1].transform.position.z);
+        }
+        else if (spellSelected == 2)
+        {
+            newSword = Instantiate(sword, triadPoints[2].transform.position, sword.transform.rotation);
+            newSword.GetComponent<MeleeAbility>().target = triadPoints[1];
+            newSword.transform.position = new Vector3(triadPoints[2].transform.position.x, triadPoints[2].transform.position.y - .25f, triadPoints[2].transform.position.z);
+        }
+        else if (spellSelected == 3)
+        {
+            newSword = Instantiate(sword, triadPoints[3].transform.position, sword.transform.rotation);
+            newSword.GetComponent<MeleeAbility>().target = triadPoints[2];
+            newSword.transform.position = new Vector3(triadPoints[3].transform.position.x, triadPoints[3].transform.position.y - .25f, triadPoints[3].transform.position.z);
+        }
+        newSword.GetComponent<MeleeAbility>().swordNum = spellSelected;
+        meleeGathering = true;
     }
     private void Fireball()
     {

@@ -47,10 +47,10 @@ MonoBehaviour:
   player1: {fileID: 0}
   player2: {fileID: 0}
   resObjects:
-  - {fileID: 6419215745289010588, guid: e742c87b1d88a1744a3c8d48df469bdf, type: 3}
+  - {fileID: 6009014884694070721, guid: dc315ee4e2f1e04419a3d1ae5b90c329, type: 3}
   - {fileID: 8152930488540302800, guid: 16372f033a3b9f84e8d5e88c64212dda, type: 3}
   - {fileID: 2707056245912890959, guid: 1a4fa87471a43834f9ac7c255ae43449, type: 3}
-  - {fileID: 6009014884694070721, guid: dc315ee4e2f1e04419a3d1ae5b90c329, type: 3}
+  - {fileID: 6419215745289010588, guid: e742c87b1d88a1744a3c8d48df469bdf, type: 3}
   currentSpawn: {fileID: 0}
   resType: 0
   respawnCounter: 0

@@ -122,6 +122,7 @@ public class WindWaveThrow : MonoBehaviour
         {
             collision.gameObject.GetComponent<PlayerControlXbox>().finishDash();
             collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * windForce); // Knock Back
+            Debug.Log(this.gameObject.transform.forward);
             if ((collision.gameObject.GetComponent<PlayerControlXbox>().stunLength > 0))
             {
                 collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * windForce/2 ); // Double If Stuned

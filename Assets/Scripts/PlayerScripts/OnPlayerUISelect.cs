@@ -51,82 +51,99 @@ public class OnPlayerUISelect : MonoBehaviour
             image.enabled = false;
             innerRing.GetComponent<Image>().sprite = inner2;
             outerRing.GetComponent<Image>().sprite = outer2;
+            outerRing.SetActive(false);
+            innerRing.SetActive(false);
             outerRing.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
             innerRing.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
             colorInner = new Color32(255, 255, 255, 255);
             colorOuter = new Color32(255, 255, 255, 255);
             childIcon.GetComponent<Image>().enabled = true;
         }
-            if (playerControl.spellPrimary[localDirection] == "Fire")
-            {
-                image.sprite = red;
-                innerRing.GetComponent<Image>().color = new Color32(255, 0, 0, 255);
-                colorInner = new Color32(255, 0, 0, 255);
-                childIcon.GetComponent<Image>().color = new Color32(255, 0, 0, 255);
-            }
-            if (playerControl.spellPrimary[localDirection] == "Wind")
-            {
-                image.sprite = cyan;
-                //67, 215, 255, 255
-                innerRing.GetComponent<Image>().color = new Color32(67, 215, 255, 255);
-                colorInner = new Color32(67, 215, 255, 255);
-                childIcon.GetComponent<Image>().color = new Color32(67, 215, 255, 255);
-            }
-            if (playerControl.spellPrimary[localDirection] == "Water")
-            {
-                image.sprite = blue;
-                innerRing.GetComponent<Image>().color = new Color32(0, 0, 255, 255);
-                colorInner = new Color32(0, 0, 255, 255);
-                childIcon.GetComponent<Image>().color = new Color32(0, 0, 255, 255);
-            }
-            if (playerControl.spellPrimary[localDirection] == "Earth")
-            {
-                image.sprite = brown;
-                innerRing.GetComponent<Image>().color = new Color32(50,205,50, 255);
-                colorInner = new Color32(50, 205, 50, 255);
-            childIcon.GetComponent<Image>().color = new Color32(50, 205, 50, 255); // old (90, 80, 0, 255);
+        if (playerControl.spellPrimary[localDirection] == "Fire")
+        {
+            image.sprite = red;
+            innerRing.SetActive(true);
+            innerRing.GetComponent<Image>().color = new Color32(255, 0, 0, 255);
+            colorInner = new Color32(255, 0, 0, 255);
+            childIcon.GetComponent<Image>().color = new Color32(255, 0, 0, 255);
         }
-            if (playerControl.spellPrimary[localDirection] == "")
-            {
-                image.sprite = white;
-            }
+        if (playerControl.spellPrimary[localDirection] == "Wind")
+        {
+            image.sprite = cyan;
+            innerRing.SetActive(true);
+            //67, 215, 255, 255
+            innerRing.GetComponent<Image>().color = new Color32(67, 215, 255, 255);
+            colorInner = new Color32(67, 215, 255, 255);
+            childIcon.GetComponent<Image>().color = new Color32(67, 215, 255, 255);
+        }
+        if (playerControl.spellPrimary[localDirection] == "Water")
+        {
+            image.sprite = blue;
+            innerRing.SetActive(true);
+            innerRing.GetComponent<Image>().color = new Color32(0, 0, 255, 255);
+            colorInner = new Color32(0, 0, 255, 255);
+            childIcon.GetComponent<Image>().color = new Color32(0, 0, 255, 255);
+        }
+        if (playerControl.spellPrimary[localDirection] == "Earth")
+        {
+            image.sprite = brown;
+            innerRing.SetActive(true);
+            innerRing.GetComponent<Image>().color = new Color32(50,205,50, 255);
+            colorInner = new Color32(50, 205, 50, 255);
+        childIcon.GetComponent<Image>().color = new Color32(50, 205, 50, 255); // old (90, 80, 0, 255);
+        }
+        if (playerControl.spellPrimary[localDirection] == "")
+        {
+            image.sprite = white;
+            outerRing.SetActive(false);
+            innerRing.SetActive(false);
+        }
 
-            if (playerControl.spellSecondary[localDirection] == "AOE")
-            {
-                outerRing.GetComponent<Image>().color = new Color32(255, 0, 0, 255);
-                colorOuter = new Color32(255, 0, 0, 255);
-                childIcon.GetComponent<Image>().sprite = cone;
-            }
-            if (playerControl.spellSecondary[localDirection] == "Range")
-            {
-                outerRing.GetComponent<Image>().color = new Color32(67, 215, 255, 255);
-                colorOuter = new Color32(67, 215, 255, 255);
-                childIcon.GetComponent<Image>().sprite = line;
-            }
-            if (playerControl.spellSecondary[localDirection] == "Dash")
-            {
-                outerRing.GetComponent<Image>().color = new Color32(0, 0, 255, 255);
-                colorOuter = new Color32(0, 0, 255, 255);
-                childIcon.GetComponent<Image>().sprite = dash;
-            }
-            if (playerControl.spellSecondary[localDirection] == "Boom")
-            {
-                childIcon.GetComponent<Image>().sprite = boom;
-                outerRing.GetComponent<Image>().color = new Color32(50, 205, 50, 255);
-            colorOuter = new Color32(90, 80, 0, 255);
-            }
-            if (playerControl.spellSecondary[localDirection] == "")
-            {
-                childIcon.GetComponent<Image>().sprite = null;
-                childIcon.GetComponent<Image>().color = new Color32(255, 255, 255, 0);
-                colorOuter = new Color32(255, 255, 255, 0);
-            }
-            if (playerControl.spellPrimary[localDirection] == "")
-            {
+        if (playerControl.spellSecondary[localDirection] == "AOE")
+        {
+            outerRing.SetActive(true);
+            outerRing.GetComponent<Image>().color = new Color32(255, 0, 0, 255);
+
+            colorOuter = new Color32(255, 0, 0, 255);
+            childIcon.GetComponent<Image>().sprite = cone;
+        }
+        if (playerControl.spellSecondary[localDirection] == "Range")
+        {
+            //outerRing.GetComponent<Image>().color = new Color32(67, 215, 255, 255);
+            //colorOuter = new Color32(67, 215, 255, 255);
+            outerRing.SetActive(true);
+            outerRing.GetComponent<Image>().color = new Color32(50, 205, 50, 255);
+            colorOuter = new Color32(50, 205, 50, 255);
+            childIcon.GetComponent<Image>().sprite = line;
+        }
+        if (playerControl.spellSecondary[localDirection] == "Dash")
+        {
+            outerRing.SetActive(true);
+            outerRing.GetComponent<Image>().color = new Color32(0, 0, 255, 255);
+            colorOuter = new Color32(0, 0, 255, 255);
+            childIcon.GetComponent<Image>().sprite = dash;
+        }
+        if (playerControl.spellSecondary[localDirection] == "Boom")
+        {
+            outerRing.SetActive(true);
+            childIcon.GetComponent<Image>().sprite = boom;
+            outerRing.GetComponent<Image>().color = new Color32(50, 205, 50, 255);
+        colorOuter = new Color32(90, 80, 0, 255);
+        }
+        if (playerControl.spellSecondary[localDirection] == "")
+        {
+            outerRing.SetActive(false);
             childIcon.GetComponent<Image>().sprite = null;
             childIcon.GetComponent<Image>().color = new Color32(255, 255, 255, 0);
-            colorInner = new Color32(255, 255, 255, 0);
-            }
+            colorOuter = new Color32(255, 255, 255, 0);
+        }
+        if (playerControl.spellPrimary[localDirection] == "")
+        {
+        innerRing.SetActive(false);
+        childIcon.GetComponent<Image>().sprite = null;
+        childIcon.GetComponent<Image>().color = new Color32(255, 255, 255, 0);
+        colorInner = new Color32(255, 255, 255, 0);
+        }
 
         if (playerControl.spellSelected != spellNumber)
         {
