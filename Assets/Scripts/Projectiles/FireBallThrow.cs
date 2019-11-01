@@ -49,6 +49,9 @@ public class FireBallThrow : MonoBehaviour
     
     public int hoverDur;
 
+    public bool isMeteor; // Halt collision with players for first half of life
+    public bool isInferno;
+
     private void Awake()
     {
         if (playerInt == 1)
@@ -71,9 +74,7 @@ public class FireBallThrow : MonoBehaviour
         maxRange = 10;
         transform.LookAt(playerAim.transform);
         spellDir = this.gameObject.transform.forward;
-        fireForce = 700;
-        fireKnockUp = 200;
-        throwSpeed = 60; // 30
+        //throwSpeed = 60; // 30
         rangeCounter = 0;
         cameraMove = GameObject.Find("MainCamera").GetComponent<CameraMove>();
         hitSlow = 101;
@@ -116,6 +117,38 @@ public class FireBallThrow : MonoBehaviour
             hitEffectInGame.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
             Destroy(this.gameObject);
         }
+        if (playerInt == 1 && collision.gameObject.tag == "Ground")
+        {
+            //print(collision.gameObject.name);
+            if (collision.gameObject.GetComponentInParent<TileBehavoir>().raised == true)
+            {
+                playerControl.canCast[spellNum] = true;
+                playerControl.spellPrimary[spellNum] = "";
+                playerControl.spellSecondary[spellNum] = ""; // Reset Spell to empty
+
+                hitEffectInGame = Instantiate(hitEffect);
+                hitEffectInGame.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
+                hitEffectInGame.transform.localScale = new Vector3(hitEffectInGame.transform.localScale.x / 3, hitEffectInGame.transform.localScale.y / 3, hitEffectInGame.transform.localScale.z / 3);
+                Destroy(this.gameObject);
+            }
+
+            
+
+        }
+        if (playerInt == 2 && collision.gameObject.tag == "Ground")
+        {
+            if (collision.gameObject.GetComponentInParent<TileBehavoir>().raised == true)
+            {
+                playerControlXbox.canCast[spellNum] = true;
+                playerControlXbox.spellPrimary[spellNum] = "";
+                playerControlXbox.spellSecondary[spellNum] = ""; // Reset Spell to empty
+
+                hitEffectInGame = Instantiate(hitEffect);
+                hitEffectInGame.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
+                Destroy(this.gameObject);
+            }
+
+        }
 
         if (playerInt == 1 && collision.gameObject.tag == "Player1" && boomReturn)
         {
@@ -129,30 +162,66 @@ public class FireBallThrow : MonoBehaviour
 
         if (!hitPlayer && playerInt == 1 && collision.gameObject.tag == "Player2")
         {
-            collision.gameObject.GetComponent<PlayerControlXbox>().finishDash();
-            collision.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 0f);
-            collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * fireForce); // Knock Back
-            Debug.Log(this.gameObject.transform.forward); 
-            if ((collision.gameObject.GetComponent<PlayerControlXbox>().stunLength > 0))
+            if (!isMeteor)
             {
-                collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * fireForce / 2); // Double If Stuned
+                collision.gameObject.GetComponent<PlayerControlXbox>().finishDash();
+                collision.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 0f);
+                collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * fireForce); // Knock Back
+                Debug.Log(this.gameObject.transform.forward);
+                if ((collision.gameObject.GetComponent<PlayerControlXbox>().stunLength > 0))
+                {
+                    collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * fireForce / 2); // Double If Stuned
+                }
+                if (!isInferno)
+                {
+                    collision.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * fireKnockUp); // Knock Up
+                }
+               
+                collision.GetComponent<BoxCollider>().isTrigger = true;
+                //Destroy(this.gameObject);
+                if (!boomReturn)
+                {
+                    playerControl.canCast[spellNum] = true;
+                    playerControl.spellPrimary[spellNum] = "";
+                    playerControl.spellSecondary[spellNum] = ""; // Reset Spell to empty
+                }
+                hitPlayer = true;
+                hitSlow = 0;
+                StartCoroutine(cameraMove.Shake(.15f, .5f));
+                //cameraMove.player2Hit = true;
+                hitEffectInGame = Instantiate(hitEffect);
+                //hitEffectInGame.transform.position = this.transform.position;
+                hitEffectInGame.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
+
             }
-            collision.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * fireKnockUp); // Knock Up
-            collision.GetComponent<BoxCollider>().isTrigger = true;
-            //Destroy(this.gameObject);
-            if (!boomReturn)
+            else if (isMeteor && rangeCounter > 1)
             {
-                playerControl.canCast[spellNum] = true;
-                playerControl.spellPrimary[spellNum] = "";
-                playerControl.spellSecondary[spellNum] = ""; // Reset Spell to empty
+                collision.gameObject.GetComponent<PlayerControlXbox>().finishDash();
+                collision.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 0f);
+                collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * fireForce); // Knock Back
+                Debug.Log(this.gameObject.transform.forward);
+                if ((collision.gameObject.GetComponent<PlayerControlXbox>().stunLength > 0))
+                {
+                    collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * fireForce / 2); // Double If Stuned
+                }
+                collision.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * fireKnockUp); // Knock Up
+                collision.GetComponent<BoxCollider>().isTrigger = true;
+                //Destroy(this.gameObject);
+                if (!boomReturn)
+                {
+                    playerControl.canCast[spellNum] = true;
+                    playerControl.spellPrimary[spellNum] = "";
+                    playerControl.spellSecondary[spellNum] = ""; // Reset Spell to empty
+                }
+                hitPlayer = true;
+                hitSlow = 0;
+                StartCoroutine(cameraMove.Shake(.15f, .5f));
+                //cameraMove.player2Hit = true;
+                hitEffectInGame = Instantiate(hitEffect);
+                //hitEffectInGame.transform.position = this.transform.position;
+                hitEffectInGame.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
+
             }
-            hitPlayer = true;
-            hitSlow = 0;
-            StartCoroutine(cameraMove.Shake(.15f, .5f));
-            //cameraMove.player2Hit = true;
-            hitEffectInGame = Instantiate(hitEffect);
-            //hitEffectInGame.transform.position = this.transform.position;
-            hitEffectInGame.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
 
         }
         if (!hitPlayer && playerInt == 2 && collision.gameObject.tag == "Player1")
@@ -164,7 +233,10 @@ public class FireBallThrow : MonoBehaviour
             {
                 collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * fireForce / 2); // Double If Stuned
             }
-            collision.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * fireKnockUp); // Knock Up
+            if (!isInferno)
+            {
+                collision.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * fireKnockUp); // Knock Up
+            }
             collision.GetComponent<BoxCollider>().isTrigger = true;
             hitPlayer = true;
             if (!boomReturn)

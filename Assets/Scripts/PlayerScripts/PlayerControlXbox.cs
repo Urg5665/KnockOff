@@ -91,6 +91,9 @@ public class PlayerControlXbox : MonoBehaviour
     public int rotateSpellChannel;
     public Image rotateSpellRing;
 
+    public int infernoCast;
+    public bool canRotate;
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.None;
@@ -131,6 +134,8 @@ public class PlayerControlXbox : MonoBehaviour
         slowDownPerCard = 2.5f;
         player2Aim = GameObject.Find("Player2Aim");
         meleeGathering = false;
+        infernoCast = 0; // up to 150
+        canRotate = true;
     }
 
     public void pickDirection()
@@ -143,6 +148,24 @@ public class PlayerControlXbox : MonoBehaviour
         //float newFloat = Input.GetAxis("CardThrow");
         //Debug.Log("Left Trigger: " + Input.GetAxisRaw("CardThrow").ToString() + "  Right Tirgger: " + Input.GetAxisRaw("SpellThrow").ToString());
         //Debug.Log("NewFloat: " + newFloat);
+        if (infernoCast > 0)
+        {
+            if (infernoCast % 5 == 0)
+            {
+                Fireball();
+            }
+            infernoCast--;
+            canRotate = false;
+            speed = 6.0f;
+        }
+        if (infernoCast == 0)
+        {
+            canRotate = true;
+            speed = 10.0f;
+        }
+
+
+
         pickDirection();
         dashDirectionTime--;
         aoeWidth = (Vector3.Distance(player2Aim.transform.position, transform.position)) / 2;
@@ -388,38 +411,7 @@ public class PlayerControlXbox : MonoBehaviour
 
             this.GetComponent<BoxCollider>().isTrigger = true;
         }
-        if (Input.GetAxis("CardThrow") == 1 && !meleeGathering && cardsThrown < 4 && canCast[spellSelected] && spellSecondary[spellSelected] == "" ) // Shoot Card
-        {
-            //CardGather();
-            MeleeGather();
-        }
-        if (Input.GetAxis("CardThrow") == 1 && cardsThrown < 4 && canCast[spellSelected] && spellSecondary[spellSelected] != "")  // Disabel Shooitng Card because spell is maxed
-        {
-            //Debug.Log("Spell Maxed - Cast it!");
-        }
-
-        // Should really be Input.GetAxis("SpellThrow") == 1 but my controller trigger has not been working so for no it is Button A
-        // Spell Casting Commands
-        if (Input.GetButton("Fire1") == true && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "") // You Have no Spell
-        {
-            //Debug.Log("No Spell Avaliable");
-        }
-        if ((Input.GetAxis("SpellThrow") == 1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Fire" ) // Shoot Fireball
-        {
-            Fireball();
-        }
-        if ((Input.GetAxis("SpellThrow") == 1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Wind") // Shoot Wind Knock
-        {
-            WindKnockback();
-        }
-        if ((Input.GetAxis("SpellThrow") == 1 ) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Water") // Shoot Wind Knock
-        {
-            WaterPull();
-        }
-        if ((Input.GetAxis("SpellThrow") == 1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Earth") // Shoot Wind Knock
-        {
-            EarthQuake();
-        }
+        ControllerInput();
 
         //Debug.Log(airBorn);
 
@@ -546,7 +538,50 @@ public class PlayerControlXbox : MonoBehaviour
             canCast[spellSelected] = false;
             fireBallID++;
             newSpell.GetComponent<FireBallThrow>().fireBallID = fireBallID;
+            newSpell.GetComponent<FireBallThrow>().fireForce = 700;
+            newSpell.GetComponent<FireBallThrow>().fireKnockUp = 200;
+            newSpell.GetComponent<FireBallThrow>().throwSpeed = 60;
         }
+        if (spellPrimary[spellSelected] == "Inferno" && infernoCast == 0) // first cast of infurno
+        {
+            newSpell = Instantiate(spellProjectile[0], this.transform.position, spellProjectile[0].transform.rotation);
+            newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - .25f, newSpell.transform.position.z);
+            newSpell.GetComponent<FireBallThrow>().spellNum = spellSelected;
+            //Debug.Log("Basic");
+            newSpell.GetComponent<FireBallThrow>().maxRange = baseRange;
+            //canCast[spellSelected] = false;
+            fireBallID++;
+            newSpell.GetComponent<FireBallThrow>().fireBallID = fireBallID;
+            //print("FireballID:" + newSpell.GetComponent<FireBallThrow>().fireBallID);
+            infernoCast = 150;
+            newSpell.GetComponent<FireBallThrow>().fireForce = 100;
+            newSpell.GetComponent<FireBallThrow>().fireKnockUp = 0;
+            newSpell.GetComponent<FireBallThrow>().throwSpeed = 40;
+            newSpell.GetComponent<FireBallThrow>().isMeteor = false;
+            newSpell.GetComponent<SphereCollider>().radius = 0.5f;
+            newSpell.GetComponent<FireBallThrow>().isInferno = true;
+            baseDashCooldown = 750;
+        }
+        if (spellPrimary[spellSelected] == "Inferno" && infernoCast != 0) // Subsequent casts of infurno
+        {
+            newSpell = Instantiate(spellProjectile[0], this.transform.position, spellProjectile[0].transform.rotation);
+            newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - .25f, newSpell.transform.position.z);
+            newSpell.GetComponent<FireBallThrow>().spellNum = spellSelected;
+            //Debug.Log("Basic");
+            newSpell.GetComponent<FireBallThrow>().maxRange = baseRange;
+            canCast[spellSelected] = false;
+            fireBallID++;
+            newSpell.GetComponent<FireBallThrow>().fireBallID = fireBallID;
+            newSpell.GetComponent<FireBallThrow>().fireForce = 20;
+            newSpell.GetComponent<FireBallThrow>().fireKnockUp = 0;
+            newSpell.GetComponent<FireBallThrow>().throwSpeed = 40;
+            newSpell.GetComponent<FireBallThrow>().isMeteor = false;
+            newSpell.GetComponent<SphereCollider>().radius = 0.5f;
+            newSpell.GetComponent<FireBallThrow>().isInferno = true;
+            //print("FireballID:" + newSpell.GetComponent<FireBallThrow>().fireBallID);
+        }
+
+        /*
         if (spellSecondary[spellSelected] == "Boom")
         {
             fireBallID++;
@@ -565,6 +600,7 @@ public class PlayerControlXbox : MonoBehaviour
             }
 
         }
+
         if (spellSecondary[spellSelected] == "AOE")
         {
             fireBallID++;
@@ -631,7 +667,7 @@ public class PlayerControlXbox : MonoBehaviour
 
             this.GetComponent<BoxCollider>().isTrigger = true;
             //Debug.Log("Invulnrble Dash");
-        }
+        }*/
     }
     private void WindKnockback()
     {
@@ -829,8 +865,46 @@ public class PlayerControlXbox : MonoBehaviour
             newSpell.GetComponent<EarthQuakeThrow>().spellNum = spellSelected;
             //Debug.Log("Basic");
             newSpell.GetComponent<EarthQuakeThrow>().maxRange = baseRange * 2;
+            newSpell.GetComponent<SphereCollider>().radius = 1.5f;
             canCast[spellSelected] = false;
+            newSpell.GetComponent<EarthQuakeThrow>().destructive = true;
         }
+        if (spellPrimary[spellSelected] == "Meteor")
+        {
+            newSpell = Instantiate(spellProjectile[3], this.transform.position, spellProjectile[0].transform.rotation);
+            newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - 1f, newSpell.transform.position.z);
+            newSpell.GetComponent<EarthQuakeThrow>().spellNum = spellSelected;
+            //Debug.Log("Basic");
+            newSpell.GetComponent<EarthQuakeThrow>().maxRange = baseRange * 2;
+            canCast[spellSelected] = false;
+            newSpell.GetComponent<SphereCollider>().radius = 3;
+            newSpell.GetComponent<EarthQuakeThrow>().lobShot = true;
+            newSpell.GetComponent<EarthQuakeThrow>().destructive = true;
+            newSpell.GetComponent<EarthQuakeThrow>().lobSpeed = 40;
+            newSpell.GetComponent<EarthQuakeThrow>().lobDec = 2;
+            newSpell.GetComponent<EarthQuakeThrow>().isMeteor = true;
+        }
+        if (spellPrimary[spellSelected] == "Mountain")
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                newSpellAOE[i] = Instantiate(spellProjectile[3], this.transform.position, spellProjectile[0].transform.rotation);
+                newSpellAOE[i].GetComponent<EarthQuakeThrow>().spellNum = spellSelected;
+                newSpellAOE[i].GetComponent<EarthQuakeThrow>().AOEspell = true;
+                aoeCone(i);
+                newSpellAOE[i].GetComponent<EarthQuakeThrow>().transform.LookAt(AOEpoint);
+                newSpellAOE[i].transform.position = new Vector3(newSpellAOE[i].transform.position.x, newSpellAOE[i].transform.position.y - 1f, newSpellAOE[i].transform.position.z);
+                newSpellAOE[i].GetComponent<EarthQuakeThrow>().maxRange = baseRange * 2;
+                newSpellAOE[i].GetComponent<SphereCollider>().radius = .2f;
+                newSpellAOE[i].GetComponent<EarthQuakeThrow>().lobShot = true;
+                newSpellAOE[i].GetComponent<EarthQuakeThrow>().destructive = false;
+                newSpellAOE[i].GetComponent<EarthQuakeThrow>().lobSpeed = 40;
+                newSpellAOE[i].GetComponent<EarthQuakeThrow>().lobDec = 4;
+            }
+            canCast[spellSelected] = false;
+
+        }
+        /*
         if (spellSecondary[spellSelected] == "Boom")
         {
             for (int i = 0; i < 3; i++)
@@ -909,7 +983,7 @@ public class PlayerControlXbox : MonoBehaviour
 
             this.GetComponent<BoxCollider>().isTrigger = true;
             //Debug.Log("Invulnrble Dash");
-        }
+        }*/
     }
     private void aoeCone(int i)
     {
@@ -974,5 +1048,79 @@ public class PlayerControlXbox : MonoBehaviour
             castAfterDash = true;
         }
         baseDashing = false;
+    }
+
+    public void ControllerInput()
+    {
+        ReassignSpells();
+        if (Input.GetAxis("CardThrow") == 1 && !meleeGathering && cardsThrown < 4 && canCast[spellSelected] && spellSecondary[spellSelected] == "") // Shoot Card
+        {
+            //CardGather();
+            MeleeGather();
+        }
+        if (Input.GetAxis("CardThrow") == 1 && cardsThrown < 4 && canCast[spellSelected] && spellSecondary[spellSelected] != "")  // Disabel Shooitng Card because spell is maxed
+        {
+            //Debug.Log("Spell Maxed - Cast it!");
+        }
+
+        // Should really be Input.GetAxis("SpellThrow") == 1 but my controller trigger has not been working so for no it is Button A
+        // Spell Casting Commands
+        if (Input.GetButton("Fire1") == true && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "") // You Have no Spell
+        {
+            //Debug.Log("No Spell Avaliable");
+        }
+        if ((Input.GetAxis("SpellThrow") == 1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Fire") // Shoot Fireball
+        {
+            Fireball();
+        }
+        if ((Input.GetAxis("SpellThrow") == 1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Inferno" && infernoCast == 0) // Shoot Fireball
+        {
+            Fireball();
+        }
+        if ((Input.GetAxis("SpellThrow") == 1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Earth") // Shoot Wind Knock
+        {
+            EarthQuake();
+        }
+        if ((Input.GetAxis("SpellThrow") == 1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Mountain") // Shoot Wind Knock
+        {
+            EarthQuake();
+        }
+        if ((Input.GetAxis("SpellThrow") == 1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Meteor") // Shoot Wind Knock
+        {
+            EarthQuake();
+        }
+        if ((Input.GetAxis("SpellThrow") == 1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Wind") // Shoot Wind Knock
+        {
+            WindKnockback();
+        }
+        if ((Input.GetAxis("SpellThrow") == 1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Water") // Shoot Wind Knock
+        {
+            WaterPull();
+        }
+    }
+    public void ReassignSpells()
+    {
+        print("Primary:" + spellPrimary[spellSelected] + "   Secondary" + spellSecondary[spellSelected]);
+        if (spellPrimary[spellSelected] == "Fire" && spellSecondary[spellSelected] == "AOE")
+        {
+            spellPrimary[spellSelected] = "Inferno";
+
+        }
+        else if (spellPrimary[spellSelected] == "Fire" && spellSecondary[spellSelected] == "Range")
+        {
+            spellPrimary[spellSelected] = "Meteor";
+
+        }
+        else if (spellPrimary[spellSelected] == "Earth" && spellSecondary[spellSelected] == "AOE")
+        {
+            spellPrimary[spellSelected] = "Meteor";
+
+        }
+        else if (spellPrimary[spellSelected] == "Earth" && spellSecondary[spellSelected] == "Range")
+        {
+            spellPrimary[spellSelected] = "Mountain";
+
+        }
+
     }
 }

@@ -67,6 +67,7 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_LightProbeVolumeOverride: {fileID: 0}
   m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
@@ -93,8 +94,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   destroyed: 0
   destroyTimer: 0
+  destroyLength: 0
+  raised: 0
+  raisedTimer: 0
+  raisedLength: 0
   mesh: {fileID: 0}
   col: {fileID: 0}
+  player1Score: 0
+  player2Score: 0
+  deathPlane: {fileID: 0}
 --- !u!64 &3741366310339446784
 MeshCollider:
   m_ObjectHideFlags: 0

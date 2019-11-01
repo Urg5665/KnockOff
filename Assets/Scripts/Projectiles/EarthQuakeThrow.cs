@@ -45,11 +45,20 @@ public class EarthQuakeThrow : MonoBehaviour
 
     public float lobSpeed;
     public float lobDec;
+    public bool lobShot; // True for meteor
+
+    public bool destructive; // False for mountain
+
+    // For meteor
+    public bool isMeteor;
+    public GameObject[] newSpellAOE;
+    public Transform AOEpoint;
+    public int aoeWidth;
+    public GameObject fireProjectile;
+    public int bombRange;
 
     private void Awake()
     {
-        lobSpeed = 20;
-        lobDec = 1;
         if (playerInt == 1)
         {
             player = GameObject.Find("Player1");
@@ -58,11 +67,7 @@ public class EarthQuakeThrow : MonoBehaviour
             spellNum = playerControl.spellSelected;
             dashTarget = GameObject.Find("Player2").transform.position;
             dashTarget = new Vector3(dashTarget.x , dashTarget.y - .5f, dashTarget.z );
-            if (playerControl.spellSecondary[spellNum] == "Range")
-            {
-                lobSpeed = 60;
-                lobDec = 5;
-            }
+            AOEpoint = GameObject.Find("AOEPoint1").GetComponent<Transform>();
         }
         if (playerInt == 2)
         {
@@ -72,8 +77,10 @@ public class EarthQuakeThrow : MonoBehaviour
             spellNum = playerControlXbox.spellSelected;
             dashTarget = GameObject.Find("Player1").transform.position;
             dashTarget = new Vector3(dashTarget.x, dashTarget.y - .5f, dashTarget.z);
+            AOEpoint = GameObject.Find("AOEPoint2").GetComponent<Transform>();
         }
         maxRange = 10;
+        bombRange = 15;
         transform.LookAt(playerAim.transform);
         throwSpeed = 30;
         rangeCounter = 0;
@@ -100,7 +107,16 @@ public class EarthQuakeThrow : MonoBehaviour
     {
         if (collision.gameObject.tag == "Ground" && rangeCounter > 3)
         {
-            collision.gameObject.GetComponentInParent<TileBehavoir>().destroyed = true;
+            if (destructive)
+            {
+                collision.gameObject.GetComponentInParent<TileBehavoir>().destroyed = true;
+            }
+            else if (!destructive) // Mountain
+            {
+                collision.gameObject.GetComponentInParent<TileBehavoir>().raised = true;
+                collision.gameObject.GetComponentInParent<TileBehavoir>().raisedTimer = 0;
+            }
+
         }
     }
     private void Start()
@@ -118,9 +134,19 @@ public class EarthQuakeThrow : MonoBehaviour
     void FixedUpdate()
     {
         this.transform.eulerAngles += new Vector3(0, 0, 20f);
-        newPart = Instantiate(earthParticle);
-        newPart.transform.position = this.transform.position;
-        newPart.transform.position = new Vector3(newPart.transform.position.x + 0.5f, newPart.transform.position.y, newPart.transform.position.z);
+        if (destructive)
+        {
+            newPart = Instantiate(earthParticle);
+            newPart.transform.position = this.transform.position;
+            newPart.transform.position = new Vector3(newPart.transform.position.x + 0.5f, newPart.transform.position.y, newPart.transform.position.z);
+        }
+        
+        if (!destructive)
+        {
+            this.GetComponent<MeshRenderer>().enabled = false;
+        }
+        
+
         if (maxRange > 60) // ranged spell
         {
             newPart = Instantiate(earthParticle);
@@ -137,21 +163,11 @@ public class EarthQuakeThrow : MonoBehaviour
             if (!boomHover)
             {
                 transform.Translate(Vector3.forward * Time.deltaTime * throwSpeed, Space.Self);
-                //transform.Translate(Vector3.up * Time.deltaTime * lobSpeed, Space.World);
-                lobSpeed -= lobDec;
-                // some reall sloppy player specific stuff dont replicate
-                if (playerInt == 1)
+                if (lobShot)
                 {
-                    if (playerControl.spellSecondary[spellNum] == "Range")
-                    {
-                        throwSpeed = 60;
-                        if (rangeCounter == 10)
-                        {
-                            //playerControl.createBomb(1, playerControl.spellProjectile[0]);
-                        }
-                    }
-
+                    transform.Translate(Vector3.up * Time.deltaTime * lobSpeed, Space.World);
                 }
+                lobSpeed -= lobDec;
 
             }
 
@@ -214,6 +230,10 @@ public class EarthQuakeThrow : MonoBehaviour
                 }
                 else if (!boomSpell)
                 {
+                    if (isMeteor)
+                    {
+                        createBomb(8); // creates 8 firballs that will travel out from meteor
+                    }
                     Destroy(this.gameObject);
                 }
                 playerControl.canCast[spellNum] = true;
@@ -228,6 +248,10 @@ public class EarthQuakeThrow : MonoBehaviour
                 }
                 else if (!boomSpell)
                 {
+                    if (isMeteor)
+                    {
+                        createBomb(8); // creates 8 fireballs that will travel out from meteor
+                    }
                     Destroy(this.gameObject);
                 }
                 playerControlXbox.canCast[spellNum] = true;
@@ -260,5 +284,75 @@ public class EarthQuakeThrow : MonoBehaviour
         }
 
 
+    }
+
+    public void createBomb(int L)
+    {
+        for (int i = 0; i < L; i++)
+        {
+            newSpellAOE[i] = Instantiate(fireProjectile, this.transform.position, fireProjectile.transform.rotation);
+            newSpellAOE[i].GetComponent<FireBallThrow>().playerInt = playerInt;
+            newSpellAOE[i].GetComponent<FireBallThrow>().spellNum = spellNum;
+            newSpellAOE[i].GetComponent<FireBallThrow>().maxRange = bombRange;
+            newSpellAOE[i].GetComponent<FireBallThrow>().AOEspell = true;
+            newSpellAOE[i].GetComponent<FireBallThrow>().fireForce = 700;
+            newSpellAOE[i].GetComponent<FireBallThrow>().fireKnockUp = 200;
+            newSpellAOE[i].GetComponent<FireBallThrow>().throwSpeed = 40;
+            newSpellAOE[i].GetComponent<FireBallThrow>().isMeteor = true;
+            newSpellAOE[i].GetComponent<SphereCollider>().radius = 3f;
+            bombCircle(newSpellAOE[i], i);
+            newSpellAOE[i].GetComponent<FireBallThrow>().transform.LookAt(AOEpoint);
+            newSpellAOE[i].transform.position = new Vector3(newSpellAOE[i].transform.position.x, newSpellAOE[i].transform.position.y + 1f, newSpellAOE[i].transform.position.z);
+        }
+    }
+
+    public void bombCircle(GameObject parent, int i)
+    {
+        AOEpoint.position = parent.transform.position;
+        float ang = 45 * i;
+        float radius = 10;
+        AOEpoint.position = new Vector3(AOEpoint.transform.position.x + (radius * Mathf.Sin(ang * Mathf.Deg2Rad)), this.transform.position.y, AOEpoint.transform.position.z + (radius * Mathf.Cos(ang * Mathf.Deg2Rad)));
+        Debug.Log(i + ":" + AOEpoint.position);
+        //AOEpoint.position 
+        /*
+        if (spellNum == 0 || spellNum == 2)
+        {
+            if (i == 1)
+            {
+                AOEpoint.position = new Vector3(AOEpoint.transform.position.x + 7.5f, this.transform.position.y, AOEpoint.transform.position.z + 7.5f);
+            }
+            if (i == 2)
+            {
+                AOEpoint.position = new Vector3(AOEpoint.transform.position.x, this.transform.position.y, AOEpoint.transform.position.z + 10f);
+            }
+            if (i == 3)
+            {
+                AOEpoint.position = new Vector3(AOEpoint.transform.position.x + 7.5f, this.transform.position.y, AOEpoint.transform.position.z + 7.5f);
+            }
+            if (i == 4)
+            {
+                AOEpoint.position = new Vector3(AOEpoint.transform.position.x - (aoeWidth / 2), this.transform.position.y, AOEpoint.transform.position.z);
+            }
+        }
+        if (spellNum == 1 || spellNum == 3)
+        {
+            if (i == 1)
+            {
+                AOEpoint.position = new Vector3(AOEpoint.transform.position.x, this.transform.position.y, AOEpoint.transform.position.z + aoeWidth / 2);
+            }
+            if (i == 2)
+            {
+                AOEpoint.position = new Vector3(AOEpoint.transform.position.x, this.transform.position.y, AOEpoint.transform.position.z + (aoeWidth / 2));
+            }
+            if (i == 3)
+            {
+                AOEpoint.position = new Vector3(AOEpoint.transform.position.x, this.transform.position.y, AOEpoint.transform.position.z - (aoeWidth * 1.5f));
+            }
+            if (i == 4)
+            {
+                AOEpoint.position = new Vector3(AOEpoint.transform.position.x, this.transform.position.y, AOEpoint.transform.position.z - (aoeWidth / 2));
+            }
+
+        }*/
     }
 }

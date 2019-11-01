@@ -104,6 +104,9 @@ public class PlayerControl : MonoBehaviour
     public int rotateSpellChannel;
     public Image rotateSpellRing;
 
+    public int infernoCast;
+    public bool canRotate;
+
 
     void Start()
     {
@@ -134,6 +137,8 @@ public class PlayerControl : MonoBehaviour
         baseDashing = false;
 
         dashSpellRange = 15; // should be very close
+        infernoCast = 0; // up to 150
+        canRotate = true;
 
         for (int i = 0; i < 4; i++)
         {
@@ -162,24 +167,41 @@ public class PlayerControl : MonoBehaviour
     }
 
     void FixedUpdate()
-    {   
+    {
         /*
         for (int i = 0; i < 4; i++)
         {
             spellPrimary[i] = "Fire";
             spellSecondary[i] = "AOE";
         }*/
+        if (infernoCast > 0)
+        {
+            if (infernoCast % 5 == 0)
+            {
+                Fireball();
+            }
+            infernoCast--;
+            canRotate = false;
+            speed = 6.0f;
+
+        }
+        if (infernoCast == 0)
+        {
+            canRotate = true;
+            speed = 10.0f;
+        }
+
 
 
         pickDirection();
         dashDirectionTime--;
         if (playerNum == 1)
         {
-            aoeWidth = (Vector3.Distance(player1Aim.transform.position, transform.position)) / 2;
+            aoeWidth = (Vector3.Distance(player1Aim.transform.position, transform.position)) / 3;
         }
         if (playerNum == 2)
         {
-            aoeWidth = (Vector3.Distance(player2Aim.transform.position, transform.position)) / 2;
+            aoeWidth = (Vector3.Distance(player2Aim.transform.position, transform.position)) / 3;
         }
 
 
@@ -215,7 +237,7 @@ public class PlayerControl : MonoBehaviour
         }
         if (stunLength == 0)
         {
-            speed = 10.0f;
+            //speed = 10.0f;
             onPlayerText.text = "";
             onPlayerStunRing.enabled = false;
         }
@@ -254,14 +276,14 @@ public class PlayerControl : MonoBehaviour
 
             if (this.transform.position.y < 2.5)
             {
-                this.GetComponent<BoxCollider>().isTrigger = false; // can fail recover
-                Vector3 above = new Vector3(transform.position.x, transform.position.y + 20, transform.position.z); 
-                transform.position = Vector3.Lerp(transform.position, above, Time.deltaTime);
+                //this.GetComponent<BoxCollider>().isTrigger = false; // can fail recover
+                //Vector3 above = new Vector3(transform.position.x, transform.position.y + 20, transform.position.z); 
+                //transform.position = Vector3.Lerp(transform.position, above, Time.deltaTime);
                 //transform.Translate(Vector3.up * Time.deltaTime * speed * 5, Space.Self);
             }
             else
             {
-                this.GetComponent<BoxCollider>().isTrigger = true;
+                //this.GetComponent<BoxCollider>().isTrigger = true;
             }
             rb.constraints = RigidbodyConstraints.FreezeRotation; 
         }
@@ -283,20 +305,17 @@ public class PlayerControl : MonoBehaviour
         }
 
         //Debug.Log(transform.position.y + "  " + grounded);
-        if (this.transform.position.y < 2.5f || this.transform.position.y > 3f)
+        if (this.transform.position.y < 2.0f || this.transform.position.y > 3f)
         {
             grounded = false;
             airBorn = true;
         }
-        if (this.transform.position.y >= 2.5f && this.transform.position.y <= 3f)
+        if (this.transform.position.y >= 2.0f && this.transform.position.y <= 3f)
         {
             grounded = true;
-            //Debug.Log(baseDashCooldown);
-            if (airBorn)
-            {
-                this.GetComponent<BoxCollider>().isTrigger = false;
-                airBorn = false;
-            }
+            this.GetComponent<BoxCollider>().isTrigger = false;
+            airBorn = false;
+
 
         }
         if (touchingWall)
@@ -394,6 +413,50 @@ public class PlayerControl : MonoBehaviour
             canCast[spellSelected] = false;
             fireBallID++;
             newSpell.GetComponent<FireBallThrow>().fireBallID = fireBallID;
+            newSpell.GetComponent<FireBallThrow>().fireForce = 700;
+            newSpell.GetComponent<FireBallThrow>().fireKnockUp = 200;
+            newSpell.GetComponent<FireBallThrow>().throwSpeed = 60;
+            newSpell.GetComponent<FireBallThrow>().isMeteor = false;
+
+            //print("FireballID:" + newSpell.GetComponent<FireBallThrow>().fireBallID);
+        }
+        if (spellPrimary[spellSelected] == "Inferno" && infernoCast == 0) // first cast of infurno
+        {
+                newSpell = Instantiate(spellProjectile[0], this.transform.position, spellProjectile[0].transform.rotation);
+                newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - .25f, newSpell.transform.position.z);
+                newSpell.GetComponent<FireBallThrow>().spellNum = spellSelected;
+                //Debug.Log("Basic");
+                newSpell.GetComponent<FireBallThrow>().maxRange = baseRange;
+                //canCast[spellSelected] = false;
+                fireBallID++;
+                newSpell.GetComponent<FireBallThrow>().fireBallID = fireBallID;
+                //print("FireballID:" + newSpell.GetComponent<FireBallThrow>().fireBallID);
+                infernoCast = 150;
+                newSpell.GetComponent<FireBallThrow>().fireForce = 100;
+                newSpell.GetComponent<FireBallThrow>().fireKnockUp = 0;
+                newSpell.GetComponent<FireBallThrow>().throwSpeed = 40;
+                newSpell.GetComponent<FireBallThrow>().isMeteor = false;
+                newSpell.GetComponent<SphereCollider>().radius = 0.5f;
+                newSpell.GetComponent<FireBallThrow>().isInferno = true;
+
+            baseDashCooldown = 750;
+        }
+        if (spellPrimary[spellSelected] == "Inferno" && infernoCast != 0) // Subsequent casts of infurno
+        {
+            newSpell = Instantiate(spellProjectile[0], this.transform.position, spellProjectile[0].transform.rotation);
+            newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - .25f, newSpell.transform.position.z);
+            newSpell.GetComponent<FireBallThrow>().spellNum = spellSelected;
+            //Debug.Log("Basic");
+            newSpell.GetComponent<FireBallThrow>().maxRange = baseRange;
+            canCast[spellSelected] = false;
+            fireBallID++;
+            newSpell.GetComponent<FireBallThrow>().fireBallID = fireBallID;
+            newSpell.GetComponent<FireBallThrow>().fireForce = 20;
+            newSpell.GetComponent<FireBallThrow>().fireKnockUp = 0;
+            newSpell.GetComponent<FireBallThrow>().throwSpeed = 40;
+            newSpell.GetComponent<FireBallThrow>().isMeteor = false;
+            newSpell.GetComponent<SphereCollider>().radius = 0.5f;
+            newSpell.GetComponent<FireBallThrow>().isInferno = true;
             //print("FireballID:" + newSpell.GetComponent<FireBallThrow>().fireBallID);
         }
         if (spellSecondary[spellSelected] == "Boom")
@@ -414,6 +477,7 @@ public class PlayerControl : MonoBehaviour
                 //print("FireballID:" + newSpell.GetComponent<FireBallThrow>().fireBallID);
             }
         }
+        /*
         if (spellSecondary[spellSelected] == "AOE")
         {
             fireBallID++;
@@ -450,7 +514,7 @@ public class PlayerControl : MonoBehaviour
 
 this.GetComponent<BoxCollider>().isTrigger = true;
             //
-        }
+        }*/
         if (spellSecondary[spellSelected] == "Range")
         {
             newSpell = Instantiate(spellProjectile[0], this.transform.position, spellProjectile[0].transform.rotation);
@@ -483,7 +547,7 @@ this.GetComponent<BoxCollider>().isTrigger = true;
                 rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
             }
 
-            this.GetComponent<BoxCollider>().isTrigger = true;
+            //this.GetComponent<BoxCollider>().isTrigger = true;
             //Debug.Log("Invulnrble Dash");
         }
     }
@@ -546,7 +610,7 @@ this.GetComponent<BoxCollider>().isTrigger = true;
                 rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
             }
 
-this.GetComponent<BoxCollider>().isTrigger = true;
+//this.GetComponent<BoxCollider>().isTrigger = true;
         }
         else if (spellSecondary[spellSelected] == "Range")
         {
@@ -574,7 +638,7 @@ this.GetComponent<BoxCollider>().isTrigger = true;
                 rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
             }
 
-this.GetComponent<BoxCollider>().isTrigger = true;
+//this.GetComponent<BoxCollider>().isTrigger = true;
             //Debug.Log("Invulnrble Dash");
 
         }
@@ -637,7 +701,7 @@ this.GetComponent<BoxCollider>().isTrigger = true;
                 rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
             }
 
-this.GetComponent<BoxCollider>().isTrigger = true;
+//this.GetComponent<BoxCollider>().isTrigger = true;
         }
         if (spellSecondary[spellSelected] == "Range")
         {
@@ -665,7 +729,7 @@ this.GetComponent<BoxCollider>().isTrigger = true;
                 rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
             }
 
-this.GetComponent<BoxCollider>().isTrigger = true;
+            //this.GetComponent<BoxCollider>().isTrigger = true;
             //Debug.Log("Invulnrble Dash");
         }
     }
@@ -678,8 +742,47 @@ this.GetComponent<BoxCollider>().isTrigger = true;
             newSpell.GetComponent<EarthQuakeThrow>().spellNum = spellSelected;
             //Debug.Log("Basic");
             newSpell.GetComponent<EarthQuakeThrow>().maxRange = baseRange*2;
+            newSpell.GetComponent<SphereCollider>().radius = 1.5f;
             canCast[spellSelected] = false;
+            newSpell.GetComponent<EarthQuakeThrow>().destructive = true;
+            newSpell.GetComponent<FireBallThrow>().throwSpeed = 60;
         }
+        if (spellPrimary[spellSelected] == "Meteor")
+        {
+            newSpell = Instantiate(spellProjectile[3], this.transform.position, spellProjectile[0].transform.rotation);
+            newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - 1f, newSpell.transform.position.z);
+            newSpell.GetComponent<EarthQuakeThrow>().spellNum = spellSelected;
+            //Debug.Log("Basic");
+            newSpell.GetComponent<EarthQuakeThrow>().maxRange = baseRange * 2;
+            canCast[spellSelected] = false;
+            newSpell.GetComponent<SphereCollider>().radius = 3;
+            newSpell.GetComponent<EarthQuakeThrow>().lobShot = true;
+            newSpell.GetComponent<EarthQuakeThrow>().destructive = true;
+            newSpell.GetComponent<EarthQuakeThrow>().lobSpeed = 40;
+            newSpell.GetComponent<EarthQuakeThrow>().lobDec = 2;
+            newSpell.GetComponent<EarthQuakeThrow>().isMeteor = true;
+        }
+        if (spellPrimary[spellSelected] == "Mountain")
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                newSpellAOE[i] = Instantiate(spellProjectile[3], this.transform.position, spellProjectile[0].transform.rotation);
+                newSpellAOE[i].GetComponent<EarthQuakeThrow>().spellNum = spellSelected;
+                newSpellAOE[i].GetComponent<EarthQuakeThrow>().AOEspell = true;
+                aoeCone(i);
+                newSpellAOE[i].GetComponent<EarthQuakeThrow>().transform.LookAt(AOEpoint);
+                newSpellAOE[i].transform.position = new Vector3(newSpellAOE[i].transform.position.x, newSpellAOE[i].transform.position.y - 1f, newSpellAOE[i].transform.position.z);
+                newSpellAOE[i].GetComponent<EarthQuakeThrow>().maxRange = baseRange * 2;
+                newSpellAOE[i].GetComponent<SphereCollider>().radius = .2f;
+                newSpellAOE[i].GetComponent<EarthQuakeThrow>().lobShot = true;
+                newSpellAOE[i].GetComponent<EarthQuakeThrow>().destructive = false;
+                newSpellAOE[i].GetComponent<EarthQuakeThrow>().lobSpeed = 40;
+                newSpellAOE[i].GetComponent<EarthQuakeThrow>().lobDec = 4;
+            }
+            canCast[spellSelected] = false;
+
+        }
+        /*
         if (spellSecondary[spellSelected] == "Boom")
         {
             for (int i = 0; i < 3; i++)
@@ -759,6 +862,7 @@ this.GetComponent<BoxCollider>().isTrigger = true;
 this.GetComponent<BoxCollider>().isTrigger = true;
             //Debug.Log("Invulnrble Dash");
         }
+        */
     }
     // Draw Cone for each particles
     public void aoeCone(int i)
@@ -943,7 +1047,7 @@ this.GetComponent<BoxCollider>().isTrigger = true;
     public void KeyboardInput()
     {
 
-
+        ReassignSpells();
         // Card Casting Commands
         if (Input.GetMouseButtonDown(0) && !meleeGathering && cardsThrown < 4 && canCast[spellSelected] && spellSecondary[spellSelected] == "") // Shoot Card
         {
@@ -965,6 +1069,22 @@ this.GetComponent<BoxCollider>().isTrigger = true;
         {
             Fireball();
         }
+        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Inferno") // Shoot Inferno
+        {
+            Fireball();
+        }
+        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Earth") // Shoot Wind Knock
+        {
+            EarthQuake();
+        }
+        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Meteor") // Shoot Wind Knock
+        {
+            EarthQuake();
+        }
+        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Mountain") // Shoot Wind Knock
+        {
+            EarthQuake();
+        }
         if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Wind") // Shoot Wind Knock
         {
             WindKnockback();
@@ -973,10 +1093,8 @@ this.GetComponent<BoxCollider>().isTrigger = true;
         {
             WaterPull();
         }
-        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Earth") // Shoot Wind Knock
-        {
-            EarthQuake();
-        }
+        grounded = true;
+        // tresting free range motion
         if (grounded) // movement
         {
             if (Input.GetKey(KeyCode.D))
@@ -1070,10 +1188,9 @@ this.GetComponent<BoxCollider>().isTrigger = true;
                 rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
             }
 
-            this.GetComponent<BoxCollider>().isTrigger = true;
+            //this.GetComponent<BoxCollider>().isTrigger = true;
         }
     }
-
     public void ContollerInput()
     {
         if (Input.GetButton("Fire1") == true && !dashing && baseDashCooldown <= 0) // Base Dash
@@ -1145,6 +1262,31 @@ this.GetComponent<BoxCollider>().isTrigger = true;
 
 
         }
+    }
+    public void ReassignSpells()
+    {
+        //print("Primary:" + spellPrimary[spellSelected] + "   Secondary" + spellSecondary[spellSelected]);
+        if (spellPrimary[spellSelected] == "Fire" && spellSecondary[spellSelected] == "AOE")
+        {
+            spellPrimary[spellSelected] = "Inferno" ;
+
+        }
+        else if (spellPrimary[spellSelected] == "Fire" && spellSecondary[spellSelected] == "Range")
+        {
+            spellPrimary[spellSelected] = "Meteor";
+
+        }
+        else if (spellPrimary[spellSelected] == "Earth" && spellSecondary[spellSelected] == "AOE")
+        {
+            spellPrimary[spellSelected] = "Meteor";
+
+        }
+        else if (spellPrimary[spellSelected] == "Earth" && spellSecondary[spellSelected] == "Range")
+        {
+            spellPrimary[spellSelected] = "Mountain";
+
+        }
+
     }
 }
        

@@ -36,48 +36,51 @@ public class PlayerAimXbox : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        xPos = this.transform.position.x - parent.position.x;
-        zPos = this.transform.position.z - parent.position.z;
-        xDif = Mathf.Abs(this.transform.position.x - parent.position.x);
-        zDif = Mathf.Abs(this.transform.position.z - parent.position.z);
-
-        hypo = Mathf.Sqrt((xDif * xDif + zDif * zDif));
-
-        angle = Mathf.Rad2Deg * (Mathf.Asin(zDif / hypo));
-
-
-        if ( angle > 45) // north south
+        if (playerControlXbox.canRotate)
         {
-            if(zPos > 0)
-            {
-                spellSelected = 0;
-            }
-            if (zPos <= 0)
-            {
-                spellSelected = 2;
-            }
-        }
-        else if ( angle <= 45) // east west
-        {
-            if (xPos > 0)
-            {
-                spellSelected = 1;
-            }
-            if (xPos <= 0)
-            {
-                spellSelected = 3;
-            }
-        }
-        if ((Input.GetAxis("HorAim") != 0 || (Input.GetAxis("VerAim") != 0)))
-        {
-            Vector3 privousPos = this.transform.position;
-            Vector3 nextPos = new Vector3(parent.transform.position.x + (Input.GetAxis("HorAim") * aimSpeed), parent.transform.position.y, parent.transform.position.z - (Input.GetAxis("VerAim") * aimSpeed));
-            transform.position = Vector3.Lerp(privousPos, nextPos, Time.deltaTime * 20);
+            xPos = this.transform.position.x - parent.position.x;
+            zPos = this.transform.position.z - parent.position.z;
+            xDif = Mathf.Abs(this.transform.position.x - parent.position.x);
+            zDif = Mathf.Abs(this.transform.position.z - parent.position.z);
+
+            hypo = Mathf.Sqrt((xDif * xDif + zDif * zDif));
+
+            angle = Mathf.Rad2Deg * (Mathf.Asin(zDif / hypo));
 
 
+            if (angle > 45) // north south
+            {
+                if (zPos > 0)
+                {
+                    spellSelected = 0;
+                }
+                if (zPos <= 0)
+                {
+                    spellSelected = 2;
+                }
+            }
+            else if (angle <= 45) // east west
+            {
+                if (xPos > 0)
+                {
+                    spellSelected = 1;
+                }
+                if (xPos <= 0)
+                {
+                    spellSelected = 3;
+                }
+            }
+            if ((Input.GetAxis("HorAim") != 0 || (Input.GetAxis("VerAim") != 0)))
+            {
+                Vector3 privousPos = this.transform.position;
+                Vector3 nextPos = new Vector3(parent.transform.position.x + (Input.GetAxis("HorAim") * aimSpeed), parent.transform.position.y, parent.transform.position.z - (Input.GetAxis("VerAim") * aimSpeed));
+                transform.position = Vector3.Lerp(privousPos, nextPos, Time.deltaTime * 20);
+
+
+            }
+            transform.position = new Vector3(this.transform.position.x, parent.transform.position.y, transform.position.z);
         }
-        transform.position = new Vector3(this.transform.position.x, parent.transform.position.y, transform.position.z);
+
 
     }
 }

@@ -21,7 +21,7 @@ public class ResourceNode : MonoBehaviour
     {
         player1 = GameObject.Find("Player1");
         player2 = GameObject.Find("Player2");
-        resType = Mathf.RoundToInt(Random.Range(0,3)); // 0 to 4 // 1  fire, 2 water, 3 earth, 4 air
+        resType = Mathf.RoundToInt(Random.Range(0,2)); // 0 to 4 // 1  fire, 2 water, 3 earth, 4 air
         currentSpawn = Instantiate(resObjects[resType], this.transform);
         respawnCounter = 501;
         respawnTime = 500;
@@ -32,7 +32,7 @@ public class ResourceNode : MonoBehaviour
         if (currentSpawn == null)
         {
             audioSource.Play();
-            resType = Mathf.RoundToInt(Random.Range(0, 3));
+            resType = Mathf.RoundToInt(Random.Range(0, 2));
             currentSpawn = Instantiate(resObjects[resType], this.transform);
             currentSpawn.SetActive(false);
             respawnCounter = 0;

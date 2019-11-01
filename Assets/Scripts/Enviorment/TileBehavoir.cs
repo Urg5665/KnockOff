@@ -8,6 +8,11 @@ public class TileBehavoir : MonoBehaviour
     public int destroyTimer;
     public int destroyLength; // The Maximum Time it remians destroyed
 
+    public bool raised;
+    public int raisedTimer;
+    public int raisedLength; // The Maximum Time it remians raised
+
+
     public MeshRenderer mesh;
     public MeshCollider col;
 
@@ -19,6 +24,8 @@ public class TileBehavoir : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //mesh = this.GetComponentInParent<MeshRenderer>();
+        //col = this.GetComponent<MeshCollider>();
         mesh = this.GetComponent<MeshRenderer>();
         col = this.GetComponentInChildren<MeshCollider>();
         destroyed = false;
@@ -27,13 +34,17 @@ public class TileBehavoir : MonoBehaviour
         player2Score = 3;
         deathPlane = GameObject.Find("DeathPlane").GetComponent<DeathPlane>();
         destroyLength = 200;
+
+        raised = false;
+        raisedTimer = 0;
+        raisedLength = 5;
     }
     
     public void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "earthQuake")
         {
-            //Debug.Log(this.gameObject.name + " was Destroyed");
+            Debug.Log(this.gameObject.name + " was Destroyed");
             destroyed = true;
         }
     }
@@ -45,6 +56,7 @@ public class TileBehavoir : MonoBehaviour
             //Debug.Log(player2Score + "  " + deathPlane.player2Score);
 
             destroyed = false;
+            raised = false;
             this.transform.position = new Vector3(transform.position.x, 0f, transform.position.z);
             col.enabled = true;
             mesh.enabled = true;
@@ -78,6 +90,27 @@ public class TileBehavoir : MonoBehaviour
                 this.transform.position = new Vector3(transform.position.x, 1.04f + (- (destroyLength+ 50) + destroyTimer), transform.position.z);
             }*/
         }
+        if (raised)
+        {
+            //col.enabled = false;
+            raisedTimer++;
+            double raisedTimerFloat = (double)raisedTimer;
+            if (raisedTimer > 0 && raisedTimer < raisedLength)
+            {
+
+                this.transform.position = new Vector3(transform.position.x, raisedTimer / 2, transform.position.z);
+            }
+            /*
+            else if (raisedTimer >= raisedLength * 80)
+            {
+                //Debug.Log("Rising");
+                this.transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+                raised = false;
+            }*/
+        }
+
+
+
         /*
         if (destroyTimer > destroyLength + 50)
         {
