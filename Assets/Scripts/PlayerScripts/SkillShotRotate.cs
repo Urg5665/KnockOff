@@ -127,7 +127,7 @@ public class SkillShotRotate : MonoBehaviour
             if (playerControl.spellPrimary[playerControl.spellSelected] == "")
             {
                 cardSkillShot.SetActive(false);
-                meleeSkillShot.SetActive(true);
+
                 mountainSkillShot.SetActive(false);
                 meteorSkillShot.SetActive(false);
             }  
@@ -135,7 +135,7 @@ public class SkillShotRotate : MonoBehaviour
             if (playerControl.spellPrimary[playerControl.spellSelected] != "" && playerControl.spellSecondary[playerControl.spellSelected] == "") // aplies base spell
             {
                 cardSkillShot.SetActive(true);
-                meleeSkillShot.SetActive(true);
+
                 baseSkillShot.SetActive(false);
                 aoeSkillShot.SetActive(false);
                 rangeSkillShot.SetActive(false);
@@ -150,7 +150,6 @@ public class SkillShotRotate : MonoBehaviour
                 dashSkillShot.GetComponent<Image>().color = redColor;
                 boomSkillShot.GetComponent<Image>().color = redColor;
                 cardSkillShot.SetActive(true);
-                meleeSkillShot.SetActive(true);
                 baseSkillShot.SetActive(false);
                 aoeSkillShot.SetActive(false);
                 rangeSkillShot.SetActive(false);
@@ -167,7 +166,6 @@ public class SkillShotRotate : MonoBehaviour
                 dashSkillShot.GetComponent<Image>().color = greenColor;
                 boomSkillShot.GetComponent<Image>().color = greenColor;
                 cardSkillShot.SetActive(true);
-                meleeSkillShot.SetActive(true);
                 baseSkillShot.SetActive(false);
                 aoeSkillShot.SetActive(false);
                 rangeSkillShot.SetActive(false);
@@ -185,7 +183,6 @@ public class SkillShotRotate : MonoBehaviour
                 dashSkillShot.GetComponent<Image>().color = yellowColor;
                 boomSkillShot.GetComponent<Image>().color = yellowColor;
                 cardSkillShot.SetActive(true);
-                meleeSkillShot.SetActive(false);
                 baseSkillShot.SetActive(false);
                 aoeSkillShot.SetActive(false);
                 rangeSkillShot.SetActive(false);
@@ -204,7 +201,6 @@ public class SkillShotRotate : MonoBehaviour
                 boomSkillShot.GetComponent<Image>().color = orangeColor;
                 meteorSkillShot.GetComponent<Image>().color = orangeColor;
                 cardSkillShot.SetActive(false);
-                meleeSkillShot.SetActive(false);
                 baseSkillShot.SetActive(false);
                 aoeSkillShot.SetActive(false);
                 rangeSkillShot.SetActive(false);
@@ -223,7 +219,6 @@ public class SkillShotRotate : MonoBehaviour
                 boomSkillShot.GetComponent<Image>().color = greyColor;
                 mountainSkillShot.GetComponent<Image>().color = greyColor;
                 cardSkillShot.SetActive(false);
-                meleeSkillShot.SetActive(false);
                 baseSkillShot.SetActive(false);
                 aoeSkillShot.SetActive(false);
                 rangeSkillShot.SetActive(false);
@@ -308,7 +303,6 @@ public class SkillShotRotate : MonoBehaviour
             if (playerControl.spellPrimary[playerControl.spellSelected] == "") // Reset Spell Completely
             {
                 cardSkillShot.SetActive(false);
-                meleeSkillShot.SetActive(true);
                 cardSkillShot.GetComponent<Image>().color = new Color32(255,255,255, 255);
                 baseSkillShot.SetActive(false);
                 aoeSkillShot.SetActive(false);

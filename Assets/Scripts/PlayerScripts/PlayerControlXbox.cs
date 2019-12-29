@@ -1100,7 +1100,7 @@ public class PlayerControlXbox : MonoBehaviour
     }
     public void ReassignSpells()
     {
-        print("Primary:" + spellPrimary[spellSelected] + "   Secondary" + spellSecondary[spellSelected]);
+        //print("Primary:" + spellPrimary[spellSelected] + "   Secondary" + spellSecondary[spellSelected]);
         if (spellPrimary[spellSelected] == "Fire" && spellSecondary[spellSelected] == "AOE")
         {
             spellPrimary[spellSelected] = "Inferno";

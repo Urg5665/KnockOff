@@ -5139,7 +5139,7 @@ SphereCollider:
   m_GameObject: {fileID: 152316728298911614}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 3
   m_Center: {x: 0, y: 0, z: 0}
@@ -6395,6 +6395,7 @@ MonoBehaviour:
   rotateSpellRing: {fileID: 0}
   infernoCast: 0
   canRotate: 0
+  canSwapSpells: 0
 --- !u!54 &1851593813860474082
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -7163,7 +7164,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6699018348804015407}
   m_Layer: 0
-  m_Name: Triads
+  m_Name: Quads
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

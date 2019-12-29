@@ -12,6 +12,7 @@ public class PlayerControl : MonoBehaviour
     public PlayerAimXbox playerAimXbox;
 
     public GameObject playerUI;
+    public bool usingTriad; // if false assume using quads
 
     public int playerNum;
     public float speed;
@@ -107,6 +108,8 @@ public class PlayerControl : MonoBehaviour
     public int infernoCast;
     public bool canRotate;
 
+    public bool canSwapSpells;
+
 
     void Start()
     {
@@ -135,7 +138,7 @@ public class PlayerControl : MonoBehaviour
         rangeSpeed = 100;
         stunLength = 0;
         baseDashing = false;
-
+        canSwapSpells = true;
         dashSpellRange = 15; // should be very close
         infernoCast = 0; // up to 150
         canRotate = true;
@@ -356,6 +359,40 @@ public class PlayerControl : MonoBehaviour
         if (collision.gameObject.tag != "Cliffs")
         {
             //touchingWall = false;
+        }
+        if ( collision.gameObject.tag == "fireRes")
+        {
+            //print("fireRes");
+
+            if (spellPrimary[spellSelected] == "")
+            {
+                spellPrimary[spellSelected] = "Fire";
+                Destroy(collision.gameObject);
+            }
+            else if(spellSecondary[spellSelected] == "")
+            {
+                spellSecondary[spellSelected] = "AOE";
+                Destroy(collision.gameObject);
+            }
+
+        }
+        if (collision.gameObject.tag == "earthRes")
+        {
+            //Debug.Log("earthRes");
+            if (spellPrimary[spellSelected] == "")
+            {
+                spellPrimary[spellSelected] = "Earth";
+                Destroy(collision.gameObject);
+            }
+            else if (spellSecondary[spellSelected] == "")
+            {
+                spellSecondary[spellSelected] = "Range";
+                Destroy(collision.gameObject);
+            }
+        }
+        if (collision.gameObject.tag == "waterRes")
+        {
+
         }
 
     }
@@ -745,7 +782,7 @@ this.GetComponent<BoxCollider>().isTrigger = true;
             newSpell.GetComponent<SphereCollider>().radius = 1.5f;
             canCast[spellSelected] = false;
             newSpell.GetComponent<EarthQuakeThrow>().destructive = true;
-            newSpell.GetComponent<FireBallThrow>().throwSpeed = 60;
+            newSpell.GetComponent<EarthQuakeThrow>().throwSpeed = 60;
         }
         if (spellPrimary[spellSelected] == "Meteor")
         {
@@ -1052,7 +1089,7 @@ this.GetComponent<BoxCollider>().isTrigger = true;
         if (Input.GetMouseButtonDown(0) && !meleeGathering && cardsThrown < 4 && canCast[spellSelected] && spellSecondary[spellSelected] == "") // Shoot Card
         {
             //CardGather();
-            MeleeGather();
+            //MeleeGather();
         }
         if (Input.GetMouseButtonDown(0) && cardsThrown < 4 && canCast[spellSelected] && spellSecondary[spellSelected] != "")  // Disabel Shooitng Card because spell is maxed
         {
@@ -1061,35 +1098,35 @@ this.GetComponent<BoxCollider>().isTrigger = true;
 
 
         // Spell Casting Commands
-        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "") // You Have no Spell
+        if (Input.GetMouseButtonDown(0) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "") // You Have no Spell
         {
             //Debug.Log("No Spell Avaliable");
         }
-        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Fire") // Shoot Fireball
+        if (Input.GetMouseButtonDown(0) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Fire") // Shoot Fireball
         {
             Fireball();
         }
-        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Inferno") // Shoot Inferno
+        if (Input.GetMouseButtonDown(0) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Inferno") // Shoot Inferno
         {
             Fireball();
         }
-        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Earth") // Shoot Wind Knock
+        if (Input.GetMouseButtonDown(0) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Earth") // Shoot Wind Knock
         {
             EarthQuake();
         }
-        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Meteor") // Shoot Wind Knock
+        if (Input.GetMouseButtonDown(0) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Meteor") // Shoot Wind Knock
         {
             EarthQuake();
         }
-        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Mountain") // Shoot Wind Knock
+        if (Input.GetMouseButtonDown(0) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Mountain") // Shoot Wind Knock
         {
             EarthQuake();
         }
-        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Wind") // Shoot Wind Knock
+        if (Input.GetMouseButtonDown(0) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Wind") // Shoot Wind Knock
         {
             WindKnockback();
         }
-        if (Input.GetMouseButtonDown(1) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Water") // Shoot Wind Knock
+        if (Input.GetMouseButtonDown(0) && cardsThrown < 4 && canCast[spellSelected] && spellPrimary[spellSelected] == "Water") // Shoot Wind Knock
         {
             WaterPull();
         }
@@ -1108,7 +1145,7 @@ this.GetComponent<BoxCollider>().isTrigger = true;
         }
         rotateSpellRing.fillAmount = (float)rotateSpellChannel / 30;
         //Debug.Log(rotateSpellChannel); 
-        if (Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.E)) // Switch Spells 
+        if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.E) && canSwapSpells) // Switch Spells 
         {
             if (Input.GetKey(KeyCode.Q))
             {
@@ -1124,23 +1161,24 @@ this.GetComponent<BoxCollider>().isTrigger = true;
                 canCast[i] = false;
             }
             speed = 0.0f;
-            rotateSpellChannel++;
-            if (rotateSpellChannel == 30 && Input.GetKey(KeyCode.Q))
+            if (Input.GetKeyDown(KeyCode.Q))
             {
                 for (int i = 0; i < 4; i++)
                 {
                     tempSpellPrimary[i] = spellPrimary[i];
                     tempSpellSecondary[i] = spellSecondary[i];
+                    canSwapSpells = false;
                 }
                 for (int i = 0; i < 3; i++)
                 {
                     spellPrimary[i] = tempSpellPrimary[i + 1];
                     spellSecondary[i] = tempSpellSecondary[i + 1];
+                    canSwapSpells = false;
                 }
                 spellPrimary[3] = tempSpellPrimary[0];
                 spellSecondary[3] = tempSpellSecondary[0];
             }
-            if (rotateSpellChannel == 30 && Input.GetKey(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.E))
             {
                 for (int i = 0; i < 4; i++)
                 {
@@ -1162,6 +1200,7 @@ this.GetComponent<BoxCollider>().isTrigger = true;
             rotateSpellChannel = 0;
             rotateSpellRing.fillAmount = 0;
             speed = 10.0f;
+            canSwapSpells = true;
             for (int i = 0; i < 4; i++)
             {
                 canCast[i] = true;
