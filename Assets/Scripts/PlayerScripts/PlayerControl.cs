@@ -12,6 +12,9 @@ public class PlayerControl : MonoBehaviour
     public PlayerAimXbox playerAimXbox;
 
     public GameObject playerUI;
+    public GameObject playerUIQuad;
+    public GameObject playerUITriad;
+
     public bool usingTriad; // if false assume using quads
 
     public int playerNum;
@@ -142,7 +145,7 @@ public class PlayerControl : MonoBehaviour
         dashSpellRange = 15; // should be very close
         infernoCast = 0; // up to 150
         canRotate = true;
-
+        pickUIStyle();
         for (int i = 0; i < 4; i++)
         {
             canCast[i] = true;
@@ -167,6 +170,19 @@ public class PlayerControl : MonoBehaviour
             spellSelected = player2Aim.GetComponent<PlayerAimXbox>().spellSelected;
         }
 
+    }
+    public void pickUIStyle()
+    {
+        if (usingTriad)
+        {
+            playerUIQuad.SetActive(false);
+            playerUITriad.SetActive(true);
+        }
+        else
+        {
+            playerUIQuad.SetActive(true);
+            playerUITriad.SetActive(false);
+        }
     }
 
     void FixedUpdate()

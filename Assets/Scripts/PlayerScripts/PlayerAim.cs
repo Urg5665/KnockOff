@@ -37,9 +37,17 @@ public class PlayerAim : MonoBehaviour
             meshAngle = playerMesh.GetComponent<Transform>().eulerAngles.y;
 
             //Debug.Log(angle + "  " +spellSelected);
-            print(meshAngle);
-            //QuadSystem();
-            TriadSystem();
+            //print(meshAngle);
+            if (playerControl.usingTriad)
+            {
+                TriadSystem();
+            }
+            else
+            {
+                QuadSystem();
+            }
+
+
             RaycastHit hit;
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -95,7 +103,7 @@ public class PlayerAim : MonoBehaviour
         }
         else if (meshAngle >= 240)
         {
-            Debug.Log("P1 Triad 3");
+            //Debug.Log("P1 Triad 3");
             spellSelected = 2;
         }
 
