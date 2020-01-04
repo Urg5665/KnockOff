@@ -466,6 +466,18 @@ public class PlayerControlXbox : MonoBehaviour
             cardsThrown--;
             canCast[collision.GetComponent<CardThrow>().cardNum] = true;
         }
+        if (collision.gameObject.tag == "Ground")
+        {
+            if (collision.gameObject.GetComponentInParent<TileBehavoir>().raised == true)
+            {
+                print("Raised");
+                this.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.up * 500);
+            }
+            else
+            {
+                print("Ground");
+            }
+        }
         if (collision.gameObject.tag == "Cliffs")
         {
             if (!touchingWall)

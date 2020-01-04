@@ -93,17 +93,14 @@ public class PlayerAim : MonoBehaviour
     {
         if (meshAngle >= 0 && meshAngle < 120)
         {
-            Debug.Log("P1 Triad 1");
             spellSelected = 0;
         }
         else if (meshAngle >= 120 && meshAngle < 240)
         {
-            Debug.Log("P1 Triad 2");
             spellSelected = 1;
         }
         else if (meshAngle >= 240)
         {
-            //Debug.Log("P1 Triad 3");
             spellSelected = 2;
         }
 

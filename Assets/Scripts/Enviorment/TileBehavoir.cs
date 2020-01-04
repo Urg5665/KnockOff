@@ -34,7 +34,7 @@ public class TileBehavoir : MonoBehaviour
         player2Score = 3;
         deathPlane = GameObject.Find("DeathPlane").GetComponent<DeathPlane>();
         destroyLength = 200;
-
+        col.isTrigger = false;
         raised = false;
         raisedTimer = 0;
         raisedLength = 5;
@@ -45,7 +45,7 @@ public class TileBehavoir : MonoBehaviour
         if (collision.gameObject.tag == "earthQuake")
         {
             Debug.Log(this.gameObject.name + " was Destroyed");
-            destroyed = true;
+            //destroyed = true;
         }
     }
 
@@ -60,6 +60,7 @@ public class TileBehavoir : MonoBehaviour
             this.transform.position = new Vector3(transform.position.x, 0f, transform.position.z);
             col.enabled = true;
             mesh.enabled = true;
+            col.isTrigger = false;
             destroyTimer = 0;
             player1Score = deathPlane.player1Score;
             player2Score = deathPlane.player2Score;
@@ -76,6 +77,7 @@ public class TileBehavoir : MonoBehaviour
         if (destroyed)
         {
             col.enabled = false;
+            col.isTrigger = false;
             destroyTimer++;
             double destroyTimerFloat = (double)destroyTimer;
             if (destroyTimer > 0 && destroyTimer < destroyLength)
@@ -92,7 +94,7 @@ public class TileBehavoir : MonoBehaviour
         }
         if (raised)
         {
-            //col.enabled = false;
+            col.isTrigger = true;
             raisedTimer++;
             double raisedTimerFloat = (double)raisedTimer;
             if (raisedTimer > 0 && raisedTimer < raisedLength)
@@ -128,4 +130,17 @@ public class TileBehavoir : MonoBehaviour
             player2Score = deathPlane.player2Score;
         }*/
     }
+
+    private void OnTriggerEnter(Collider collision)
+    {
+        if (collision.gameObject.tag == "Player1" || collision.gameObject.tag == "Player2")
+        {
+            if (raised)
+            {
+                collision.gameObject.GetComponent<Rigidbody>().AddForce(collision.gameObject.transform.forward * 500 * -1);
+            }
+        }
+    }
+
 }
+

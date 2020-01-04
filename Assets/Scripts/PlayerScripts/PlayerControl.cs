@@ -1097,6 +1097,110 @@ this.GetComponent<BoxCollider>().isTrigger = true;
             canCast[dashDirection] = true;
         }
     }
+    public void RotateSpells()
+    {
+        if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.E) && canSwapSpells) // Switch Spells 
+        {
+            if (Input.GetKey(KeyCode.Q))
+            {
+                rotateSpellRing.GetComponent<Image>().fillClockwise = false;
+            }
+            else if (Input.GetKey(KeyCode.E))
+            {
+                rotateSpellRing.GetComponent<Image>().fillClockwise = true;
+            }
+
+            for (int i = 0; i < 4; i++)
+            {
+                canCast[i] = false;
+            }
+            speed = 0.0f;
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                if (usingTriad)
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        tempSpellPrimary[i] = spellPrimary[i];
+                        tempSpellSecondary[i] = spellSecondary[i];
+                        canSwapSpells = false;
+                    }
+                    for (int i = 0; i < 2; i++)
+                    {
+                        spellPrimary[i] = tempSpellPrimary[i + 1];
+                        spellSecondary[i] = tempSpellSecondary[i + 1];
+                        canSwapSpells = false;
+                    }
+                    spellPrimary[2] = tempSpellPrimary[0];
+                    spellSecondary[2] = tempSpellSecondary[0];
+                }
+                else
+                {
+                    for (int i = 0; i < 4; i++)
+                    {
+                        tempSpellPrimary[i] = spellPrimary[i];
+                        tempSpellSecondary[i] = spellSecondary[i];
+                        canSwapSpells = false;
+                    }
+                    for (int i = 0; i < 3; i++)
+                    {
+                        spellPrimary[i] = tempSpellPrimary[i + 1];
+                        spellSecondary[i] = tempSpellSecondary[i + 1];
+                        canSwapSpells = false;
+                    }
+                    spellPrimary[3] = tempSpellPrimary[0];
+                    spellSecondary[3] = tempSpellSecondary[0];
+                }
+
+            }
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                if (usingTriad)
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        tempSpellPrimary[i] = spellPrimary[i];
+                        tempSpellSecondary[i] = spellSecondary[i];
+                    }
+                    for (int i = 0; i < 2; i++)
+                    {
+                        spellPrimary[i + 1] = tempSpellPrimary[i];
+                        spellSecondary[i + 1] = tempSpellSecondary[i];
+                    }
+                    spellPrimary[0] = tempSpellPrimary[2];
+                    spellSecondary[0] = tempSpellSecondary[2];
+                }
+                else
+                {
+                    for (int i = 0; i < 4; i++)
+                    {
+                        tempSpellPrimary[i] = spellPrimary[i];
+                        tempSpellSecondary[i] = spellSecondary[i];
+                    }
+                    for (int i = 0; i < 3; i++)
+                    {
+                        spellPrimary[i + 1] = tempSpellPrimary[i];
+                        spellSecondary[i + 1] = tempSpellSecondary[i];
+                    }
+                    spellPrimary[0] = tempSpellPrimary[3];
+                    spellSecondary[0] = tempSpellSecondary[3];
+                }
+
+            }
+
+        }
+        else if (Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.E))
+        {
+            rotateSpellChannel = 0;
+            rotateSpellRing.fillAmount = 0;
+            speed = 10.0f;
+            canSwapSpells = true;
+            for (int i = 0; i < 4; i++)
+            {
+                canCast[i] = true;
+            }
+        }
+    }
     public void KeyboardInput()
     {
 
@@ -1161,67 +1265,8 @@ this.GetComponent<BoxCollider>().isTrigger = true;
         }
         rotateSpellRing.fillAmount = (float)rotateSpellChannel / 30;
         //Debug.Log(rotateSpellChannel); 
-        if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.E) && canSwapSpells) // Switch Spells 
-        {
-            if (Input.GetKey(KeyCode.Q))
-            {
-                rotateSpellRing.GetComponent<Image>().fillClockwise = false;
-            }
-            else if (Input.GetKey(KeyCode.E))
-            {
-                rotateSpellRing.GetComponent<Image>().fillClockwise = true;
-            }
+        RotateSpells();
 
-            for (int i = 0; i < 4; i++)
-            {
-                canCast[i] = false;
-            }
-            speed = 0.0f;
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    tempSpellPrimary[i] = spellPrimary[i];
-                    tempSpellSecondary[i] = spellSecondary[i];
-                    canSwapSpells = false;
-                }
-                for (int i = 0; i < 3; i++)
-                {
-                    spellPrimary[i] = tempSpellPrimary[i + 1];
-                    spellSecondary[i] = tempSpellSecondary[i + 1];
-                    canSwapSpells = false;
-                }
-                spellPrimary[3] = tempSpellPrimary[0];
-                spellSecondary[3] = tempSpellSecondary[0];
-            }
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    tempSpellPrimary[i] = spellPrimary[i];
-                    tempSpellSecondary[i] = spellSecondary[i];
-                }
-                for (int i = 0; i < 3; i++)
-                {
-                    spellPrimary[i + 1] = tempSpellPrimary[i];
-                    spellSecondary[i + 1] = tempSpellSecondary[i];
-                }
-                spellPrimary[0] = tempSpellPrimary[3];
-                spellSecondary[0] = tempSpellSecondary[3];
-            }
-
-        }
-        else if (Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.E))
-        {
-            rotateSpellChannel = 0;
-            rotateSpellRing.fillAmount = 0;
-            speed = 10.0f;
-            canSwapSpells = true;
-            for (int i = 0; i < 4; i++)
-            {
-                canCast[i] = true;
-            }
-        }
 
         if (Input.GetKeyDown(KeyCode.Space) && !dashing && baseDashCooldown <= 0) // Base Dash
         {
