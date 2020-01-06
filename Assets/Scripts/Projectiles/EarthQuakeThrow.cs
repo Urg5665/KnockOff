@@ -113,8 +113,9 @@ public class EarthQuakeThrow : MonoBehaviour
             }
             else if (!destructive) // Mountain
             {
-                collision.gameObject.GetComponentInParent<TileBehavoir>().raised = true;
-                collision.gameObject.GetComponentInParent<TileBehavoir>().raisedTimer = 0;
+                collision.gameObject.GetComponentInParent<TileBehavoir>().rising = true;
+                collision.gameObject.GetComponentInParent<TileBehavoir>().risingTimer = 0;
+                collision.gameObject.GetComponentInParent<TileBehavoir>().mountainDir = this.transform.forward;
             }
 
         }
@@ -143,7 +144,8 @@ public class EarthQuakeThrow : MonoBehaviour
         
         if (!destructive)
         {
-            this.GetComponent<MeshRenderer>().enabled = false;
+            this.GetComponent<MeshRenderer>().enabled = true;
+
         }
         
 
@@ -312,7 +314,7 @@ public class EarthQuakeThrow : MonoBehaviour
         float ang = 45 * i;
         float radius = 10;
         AOEpoint.position = new Vector3(AOEpoint.transform.position.x + (radius * Mathf.Sin(ang * Mathf.Deg2Rad)), this.transform.position.y, AOEpoint.transform.position.z + (radius * Mathf.Cos(ang * Mathf.Deg2Rad)));
-        Debug.Log(i + ":" + AOEpoint.position);
+        //Debug.Log(i + ":" + AOEpoint.position);
         //AOEpoint.position 
         /*
         if (spellNum == 0 || spellNum == 2)

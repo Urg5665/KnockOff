@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class PlayerControl : MonoBehaviour
 {
+    
     public GameObject player1Aim;
     public GameObject player2Aim;
     public PlayerAim playerAim;
@@ -358,6 +359,13 @@ public class PlayerControl : MonoBehaviour
             cardsThrown--;
             canCast[collision.GetComponent<CardThrow>().cardNum] = true;
         }
+        if (collision.gameObject.tag == "Ground")
+        {
+            if (collision.gameObject.GetComponentInParent<TileBehavoir>().raised == true)
+            {
+                finishDash();
+            }
+        }
         if (collision.gameObject.tag == "Cliffs")
         {
             if (!touchingWall)
@@ -505,7 +513,7 @@ public class PlayerControl : MonoBehaviour
             fireBallID++;
             newSpell.GetComponent<FireBallThrow>().fireBallID = fireBallID;
             newSpell.GetComponent<FireBallThrow>().fireForce = 20;
-            newSpell.GetComponent<FireBallThrow>().fireKnockUp = 0;
+            newSpell.GetComponent<FireBallThrow>().fireKnockUp = -10;
             newSpell.GetComponent<FireBallThrow>().throwSpeed = 40;
             newSpell.GetComponent<FireBallThrow>().isMeteor = false;
             newSpell.GetComponent<SphereCollider>().radius = 0.5f;
@@ -920,19 +928,19 @@ this.GetComponent<BoxCollider>().isTrigger = true;
     // Draw Cone for each particles
     public void aoeCone(int i)
     {
-        if (i == 0)
+        if (usingTriad)
         {
-            AOEpoint.position = player1Aim.transform.position;
-        }
-        if (spellSelected == 0 || spellSelected == 2)
-        {
+            if (i == 0)
+            {
+                AOEpoint.position = player1Aim.transform.position;
+            }            
             if (i == 1)
             {
-                AOEpoint.position = new Vector3(AOEpoint.transform.position.x + aoeWidth/2, this.transform.position.y, AOEpoint.transform.position.z);
+                AOEpoint.position = new Vector3(AOEpoint.transform.position.x + aoeWidth / 2, this.transform.position.y, AOEpoint.transform.position.z);
             }
             if (i == 2)
             {
-                AOEpoint.position = new Vector3(AOEpoint.transform.position.x + (aoeWidth/2), this.transform.position.y, AOEpoint.transform.position.z);
+                AOEpoint.position = new Vector3(AOEpoint.transform.position.x + (aoeWidth / 2), this.transform.position.y, AOEpoint.transform.position.z);
             }
             if (i == 3)
             {
@@ -940,29 +948,56 @@ this.GetComponent<BoxCollider>().isTrigger = true;
             }
             if (i == 4)
             {
-                AOEpoint.position = new Vector3(AOEpoint.transform.position.x - (aoeWidth/2), this.transform.position.y, AOEpoint.transform.position.z);
-            }
+                AOEpoint.position = new Vector3(AOEpoint.transform.position.x - (aoeWidth / 2), this.transform.position.y, AOEpoint.transform.position.z);
+            }            
         }
-        if (spellSelected == 1 || spellSelected == 3)
+        else
         {
-            if (i == 1)
+            if (i == 0)
             {
-                AOEpoint.position = new Vector3(AOEpoint.transform.position.x, this.transform.position.y, AOEpoint.transform.position.z + aoeWidth/2);
+                AOEpoint.position = player1Aim.transform.position;
             }
-            if (i == 2)
+            if (spellSelected == 0 || spellSelected == 2)
             {
-                AOEpoint.position = new Vector3(AOEpoint.transform.position.x, this.transform.position.y, AOEpoint.transform.position.z + (aoeWidth/2));
+                if (i == 1)
+                {
+                    AOEpoint.position = new Vector3(AOEpoint.transform.position.x + aoeWidth / 2, this.transform.position.y, AOEpoint.transform.position.z);
+                }
+                if (i == 2)
+                {
+                    AOEpoint.position = new Vector3(AOEpoint.transform.position.x + (aoeWidth / 2), this.transform.position.y, AOEpoint.transform.position.z);
+                }
+                if (i == 3)
+                {
+                    AOEpoint.position = new Vector3(AOEpoint.transform.position.x - (aoeWidth * 1.5f), this.transform.position.y, AOEpoint.transform.position.z);
+                }
+                if (i == 4)
+                {
+                    AOEpoint.position = new Vector3(AOEpoint.transform.position.x - (aoeWidth / 2), this.transform.position.y, AOEpoint.transform.position.z);
+                }
             }
-            if (i == 3)
+            if (spellSelected == 1 || spellSelected == 3)
             {
-                AOEpoint.position = new Vector3(AOEpoint.transform.position.x, this.transform.position.y, AOEpoint.transform.position.z - (aoeWidth*1.5f));
-            }
-            if (i == 4)
-            {
-                AOEpoint.position = new Vector3(AOEpoint.transform.position.x, this.transform.position.y, AOEpoint.transform.position.z - (aoeWidth/2));
-            }
+                if (i == 1)
+                {
+                    AOEpoint.position = new Vector3(AOEpoint.transform.position.x, this.transform.position.y, AOEpoint.transform.position.z + aoeWidth / 2);
+                }
+                if (i == 2)
+                {
+                    AOEpoint.position = new Vector3(AOEpoint.transform.position.x, this.transform.position.y, AOEpoint.transform.position.z + (aoeWidth / 2));
+                }
+                if (i == 3)
+                {
+                    AOEpoint.position = new Vector3(AOEpoint.transform.position.x, this.transform.position.y, AOEpoint.transform.position.z - (aoeWidth * 1.5f));
+                }
+                if (i == 4)
+                {
+                    AOEpoint.position = new Vector3(AOEpoint.transform.position.x, this.transform.position.y, AOEpoint.transform.position.z - (aoeWidth / 2));
+                }
 
+            }
         }
+
     }
     //
     //         pos.x = center.x + radius * Mathf.Sin(ang * Mathf.Deg2Rad);

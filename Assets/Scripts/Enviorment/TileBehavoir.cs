@@ -9,8 +9,9 @@ public class TileBehavoir : MonoBehaviour
     public int destroyLength; // The Maximum Time it remians destroyed
 
     public bool raised;
-    public int raisedTimer;
-    public int raisedLength; // The Maximum Time it remians raised
+    public bool rising;
+    public int risingTimer;
+    public int risingLength; // The Maximum Time it remians raised
 
 
     public MeshRenderer mesh;
@@ -20,6 +21,7 @@ public class TileBehavoir : MonoBehaviour
     public int player2Score;
 
     public DeathPlane deathPlane;
+    public Vector3 mountainDir;
 
     // Start is called before the first frame update
     void Start()
@@ -36,8 +38,9 @@ public class TileBehavoir : MonoBehaviour
         destroyLength = 200;
         col.isTrigger = false;
         raised = false;
-        raisedTimer = 0;
-        raisedLength = 5;
+        rising = false;
+        risingTimer = 0;
+        risingLength = 7;
     }
     
     public void OnCollisionEnter(Collision collision)
@@ -92,23 +95,25 @@ public class TileBehavoir : MonoBehaviour
                 this.transform.position = new Vector3(transform.position.x, 1.04f + (- (destroyLength+ 50) + destroyTimer), transform.position.z);
             }*/
         }
-        if (raised)
+        if (rising)
         {
             col.isTrigger = true;
-            raisedTimer++;
-            double raisedTimerFloat = (double)raisedTimer;
-            if (raisedTimer > 0 && raisedTimer < raisedLength)
+            risingTimer++;
+            double risingTimerFloat = (double)risingTimer;
+            if (risingTimer > 0 && risingTimer < risingLength)
             {
-
-                this.transform.position = new Vector3(transform.position.x, raisedTimer / 2, transform.position.z);
+                this.transform.position = new Vector3(transform.position.x, risingTimer / 2, transform.position.z);
             }
-            /*
-            else if (raisedTimer >= raisedLength * 80)
+            else
             {
-                //Debug.Log("Rising");
-                this.transform.position = new Vector3(transform.position.x, 0, transform.position.z);
-                raised = false;
-            }*/
+                //Debug.Log("Rising to Raised at " + risingTimer);
+                raised = true;
+                rising = false;
+            }
+        }
+        if (raised)
+        {
+            col.isTrigger = false;
         }
 
 

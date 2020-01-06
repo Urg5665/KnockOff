@@ -167,7 +167,7 @@ public class FireBallThrow : MonoBehaviour
                 collision.gameObject.GetComponent<PlayerControlXbox>().finishDash();
                 collision.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 0f);
                 collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * fireForce); // Knock Back
-                Debug.Log(this.gameObject.transform.forward);
+                //Debug.Log(this.gameObject.transform.forward);
                 if ((collision.gameObject.GetComponent<PlayerControlXbox>().stunLength > 0))
                 {
                     collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * fireForce / 2); // Double If Stuned

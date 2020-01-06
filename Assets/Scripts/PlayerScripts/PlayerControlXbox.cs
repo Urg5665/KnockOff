@@ -93,6 +93,9 @@ public class PlayerControlXbox : MonoBehaviour
 
     public int infernoCast;
     public bool canRotate;
+    public bool knockBacked; // To not have the Rising Cliff effect compound or any knockback effect compound when unwanted
+
+    public GameObject risingMountain; // To have a single mountain tile apply the force to 1 player, instead of adding 
 
     void Start()
     {
@@ -136,6 +139,8 @@ public class PlayerControlXbox : MonoBehaviour
         meleeGathering = false;
         infernoCast = 0; // up to 150
         canRotate = true;
+        knockBacked = false;
+        risingMountain = null;
     }
 
     public void pickDirection()
@@ -163,7 +168,16 @@ public class PlayerControlXbox : MonoBehaviour
             canRotate = true;
             speed = 10.0f;
         }
+        if (risingMountain != null)
+        {
 
+            this.gameObject.GetComponent<Rigidbody>().AddForce(risingMountain.GetComponentInParent<TileBehavoir>().mountainDir * 200);
+            print(risingMountain.GetComponentInParent<TileBehavoir>().mountainDir);
+            this.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.up * 150);
+            
+            risingMountain = null;
+        }
+        print(this.gameObject.GetComponent<Rigidbody>().velocity);
 
 
         pickDirection();
@@ -426,7 +440,8 @@ public class PlayerControlXbox : MonoBehaviour
             if (Input.GetAxis("Vertical") > 0)
                 transform.Translate(Vector3.back * Time.deltaTime * speed, Space.World);
 
-
+            knockBacked = false;
+            
         }
         if (this.transform.position.y < 2.5f || this.transform.position.y > 3f)
         {
@@ -468,14 +483,26 @@ public class PlayerControlXbox : MonoBehaviour
         }
         if (collision.gameObject.tag == "Ground")
         {
+            if (collision.gameObject.GetComponentInParent<TileBehavoir>().rising == true)
+            {
+
+                risingMountain = collision.gameObject;
+                this.GetComponent<BoxCollider>().isTrigger = true;
+                //print("Rising mountain =" + risingMountain.name);
+
+
+            }
             if (collision.gameObject.GetComponentInParent<TileBehavoir>().raised == true)
             {
-                print("Raised");
-                this.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.up * 500);
+                finishDash();
+
+
+
             }
+
             else
             {
-                print("Ground");
+                //print("Ground");
             }
         }
         if (collision.gameObject.tag == "Cliffs")
