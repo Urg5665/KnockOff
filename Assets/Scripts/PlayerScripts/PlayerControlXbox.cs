@@ -76,6 +76,7 @@ public class PlayerControlXbox : MonoBehaviour
 
     // Testing Stun out on Player
     public int stunLength;
+    public int maxStunLength;
     public Text onPlayerText;
     public Image onPlayerStunRing;
 
@@ -177,7 +178,7 @@ public class PlayerControlXbox : MonoBehaviour
             
             risingMountain = null;
         }
-        print(this.gameObject.GetComponent<Rigidbody>().velocity);
+        //print(this.gameObject.GetComponent<Rigidbody>().velocity);
 
 
         pickDirection();
@@ -199,7 +200,7 @@ public class PlayerControlXbox : MonoBehaviour
             stunLength--;
             onPlayerText.text =  "" + stunLength;
             onPlayerStunRing.enabled = true;
-            onPlayerStunRing.fillAmount = (float)stunLength/100;
+            onPlayerStunRing.fillAmount = (float)stunLength/maxStunLength;
         }
         if (stunLength == 0)
         {

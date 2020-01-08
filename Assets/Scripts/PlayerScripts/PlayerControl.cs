@@ -105,6 +105,11 @@ public class PlayerControl : MonoBehaviour
     public int baseDashCooldown;
     public Image onPlayerDashCooldownRing;
     public bool baseDashing;
+    //3 dash charge system
+    public int dashCharges;
+    public int dashChargeTime;
+    public int dashChargeLength;
+    public bool dashRecovered;
 
     public int rotateSpellChannel;
     public Image rotateSpellRing;
@@ -147,6 +152,10 @@ public class PlayerControl : MonoBehaviour
         infernoCast = 0; // up to 150
         canRotate = true;
         pickUIStyle();
+        dashCharges = 1;
+        dashChargeTime = 0;
+        dashChargeLength = 500;
+        dashRecovered = false;
         for (int i = 0; i < 4; i++)
         {
             canCast[i] = true;
@@ -233,19 +242,6 @@ public class PlayerControl : MonoBehaviour
             this.GetComponent<Rigidbody>().AddForce(Vector3.left * 600);
             this.GetComponent<Rigidbody>().AddForce(Vector3.up * 400);
         }
-        if ( baseDashCooldown > 0)
-        {
-            if (grounded)
-            {
-                baseDashCooldown -= 5;
-            }
-            else
-            {
-                baseDashCooldown--;
-            }
-            onPlayerDashCooldownRing.fillAmount = ((float)baseDashCooldown / 200);
-        }
-
 
         if (stunLength > 0)
         {
@@ -261,6 +257,31 @@ public class PlayerControl : MonoBehaviour
             onPlayerText.text = "";
             onPlayerStunRing.enabled = false;
         }
+        if (dashCharges < 3)
+        {
+            dashChargeTime += 1;
+            if (dashChargeTime > dashChargeLength)
+            {
+                dashCharges++;
+                dashChargeTime = 0;
+                print(dashCharges);
+            }
+            //onPlayerDashCooldownRing.fillAmount = ((float)dashChargeTime/dashChargeLength);
+        }
+        //print(dashCharges);
+        /*
+        if (baseDashCooldown > 0)
+        {
+            if (grounded)
+            {
+                baseDashCooldown -= 5;
+            }
+            else
+            {
+                baseDashCooldown--;
+            }
+            onPlayerDashCooldownRing.fillAmount = ((float)baseDashCooldown / 200);
+        }*/
         if (!dashing)
         {
             playerUI.SetActive(true);
@@ -294,15 +315,24 @@ public class PlayerControl : MonoBehaviour
                 dashLength = 10;
             }
 
-            if (this.transform.position.y < 2.5)
+            if (this.transform.position.y < 2.5 & dashCharges > 0) // only doable at 2 or 3 charges
             {
-                //this.GetComponent<BoxCollider>().isTrigger = false; // can fail recover
-                //Vector3 above = new Vector3(transform.position.x, transform.position.y + 20, transform.position.z); 
-                //transform.position = Vector3.Lerp(transform.position, above, Time.deltaTime);
-                //transform.Translate(Vector3.up * Time.deltaTime * speed * 5, Space.Self);
+                
+                this.GetComponent<BoxCollider>().isTrigger = false; // can fail recover
+                Vector3 above = new Vector3(transform.position.x, transform.position.y + 2, transform.position.z); 
+                transform.position = Vector3.Lerp(transform.position, above, Time.deltaTime);
+                transform.Translate(Vector3.up * Time.deltaTime * speed * 5, Space.Self);
+                dashRecovered = true;
+                
             }
             else
             {
+                if (dashRecovered)
+                {
+                    dashRecovered = false;
+                    dashCharges -= 1;
+
+                }
                 //this.GetComponent<BoxCollider>().isTrigger = true;
             }
             rb.constraints = RigidbodyConstraints.FreezeRotation; 
@@ -825,6 +855,19 @@ this.GetComponent<BoxCollider>().isTrigger = true;
         }
         if (spellPrimary[spellSelected] == "Mountain")
         {
+            newSpell = Instantiate(spellProjectile[3], this.transform.position, spellProjectile[0].transform.rotation);
+            newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - 1f, newSpell.transform.position.z);
+            newSpell.GetComponent<EarthQuakeThrow>().spellNum = spellSelected;
+            //Debug.Log("Basic");
+            newSpell.GetComponent<EarthQuakeThrow>().maxRange = baseRange;
+            canCast[spellSelected] = false;
+            newSpell.GetComponent<SphereCollider>().radius = .2f;
+            newSpell.GetComponent<EarthQuakeThrow>().lobShot = false;
+            newSpell.GetComponent<EarthQuakeThrow>().destructive = false;
+            newSpell.GetComponent<EarthQuakeThrow>().lobSpeed = 40;
+            newSpell.GetComponent<EarthQuakeThrow>().lobDec = 4;
+            newSpell.GetComponent<EarthQuakeThrow>().isMountain = true;
+            /*
             for (int i = 0; i < 5; i++)
             {
                 newSpellAOE[i] = Instantiate(spellProjectile[3], this.transform.position, spellProjectile[0].transform.rotation);
@@ -841,6 +884,7 @@ this.GetComponent<BoxCollider>().isTrigger = true;
                 newSpellAOE[i].GetComponent<EarthQuakeThrow>().lobDec = 4;
             }
             canCast[spellSelected] = false;
+            */
 
         }
         /*
@@ -1303,16 +1347,25 @@ this.GetComponent<BoxCollider>().isTrigger = true;
         RotateSpells();
 
 
-        if (Input.GetKeyDown(KeyCode.Space) && !dashing && baseDashCooldown <= 0) // Base Dash
+        if (Input.GetKeyDown(KeyCode.Space) && !dashing && dashCharges > 0) // Base Dash
         {
-            castAfterDash = false;
-            baseDashCooldown = 200;
-            dashing = true;
-            dashDirection = spellSelected;
-            dashAim = new Vector3(player1Aim.transform.position.x, player1Aim.transform.position.y, player1Aim.transform.position.z);
-            dashDirectionTime = 75;
-            transform.LookAt(dashAim);
-            baseDashing = true;
+            if (this.transform.position.y < 2.5 & dashCharges < 2)
+            {
+                print("Not Enough dashes! " + dashCharges);
+            }
+            else
+            {
+                castAfterDash = false;
+                dashCharges -= 1;
+                dashing = true;
+                dashDirection = spellSelected;
+                dashAim = new Vector3(player1Aim.transform.position.x, player1Aim.transform.position.y, player1Aim.transform.position.z);
+                dashDirectionTime = 75;
+                transform.LookAt(dashAim);
+                baseDashing = true;
+                print(dashCharges);
+            }
+
 
             if (this.transform.position.y < 2.5)
             {

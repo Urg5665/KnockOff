@@ -4,14 +4,33 @@ using UnityEngine;
 
 public class TileBehavoir : MonoBehaviour
 {
+    public Vector3 defaultPosition;
+
+    public Material defaultGround;
+    public Material fireGround;
+
+    public Material[] mats;
+
+    public bool shattered; // Pre Requisite to destoryed
+    public int shatterTime;
+    public int shatterLength; // Max time before it is destroyed
+    public float magnitude;
+
     public bool destroyed;
     public int destroyTimer;
     public int destroyLength; // The Maximum Time it remians destroyed
+
+    public bool inflamed;
+    public int inflamedTime;
+    public int inflamedLength;
 
     public bool raised;
     public bool rising;
     public int risingTimer;
     public int risingLength; // The Maximum Time it remians raised
+
+    public int raisedTimer;
+    public int raisedLength;
 
 
     public MeshRenderer mesh;
@@ -30,6 +49,7 @@ public class TileBehavoir : MonoBehaviour
         //col = this.GetComponent<MeshCollider>();
         mesh = this.GetComponent<MeshRenderer>();
         col = this.GetComponentInChildren<MeshCollider>();
+        defaultPosition = this.transform.position;
         destroyed = false;
         destroyTimer = 0;
         player1Score = 3;
@@ -41,6 +61,14 @@ public class TileBehavoir : MonoBehaviour
         rising = false;
         risingTimer = 0;
         risingLength = 7;
+        raisedLength = 200;
+        raisedTimer = 0;
+        shattered = false;
+        shatterLength = 100;
+        shatterTime = 0;
+        magnitude = 0.5f;
+        inflamedLength = 200;
+        inflamedTime = 0;
     }
     
     public void OnCollisionEnter(Collision collision)
@@ -74,7 +102,47 @@ public class TileBehavoir : MonoBehaviour
 
         if (Input.GetKey(KeyCode.H))
         {
-            destroyed = true;
+           shattered = true;
+        }
+        if (inflamed)
+        {
+            inflamedTime++;
+            if(inflamedTime < inflamedLength)
+            {
+                mats = GetComponent<Renderer>().materials;
+                mats[0] = fireGround;
+                GetComponent<Renderer>().materials = mats;
+            }
+            else
+            {
+                inflamed = false;
+                inflamedTime = 0;
+                mats = GetComponent<Renderer>().materials;
+                mats[0] = defaultGround;
+                GetComponent<Renderer>().materials = mats;
+            }
+        }
+
+        if (shattered)
+        {
+            shatterTime++;
+            magnitude += 0.02f;
+            if (shatterTime < shatterLength)
+            {
+                float x = Random.Range(-.1f, .1f) * magnitude;
+                float y = Random.Range(-.1f, .1f) * magnitude;
+                float z = Random.Range(-.1f, .1f) * magnitude;
+                transform.position = new Vector3(defaultPosition.x + x, defaultPosition.y + y, defaultPosition.z + z);
+
+            }
+            else
+            {
+                this.transform.position = defaultPosition;
+                shattered = false;
+                destroyed = true;
+                shatterTime = 0;
+                magnitude = 0.5f;
+            }
         }
 
         if (destroyed)
@@ -97,6 +165,10 @@ public class TileBehavoir : MonoBehaviour
         }
         if (rising)
         {
+            inflamed = false;
+            inflamedTime = 0;
+            shattered = false;
+            shatterTime = 0;
             col.isTrigger = true;
             risingTimer++;
             double risingTimerFloat = (double)risingTimer;
@@ -113,7 +185,21 @@ public class TileBehavoir : MonoBehaviour
         }
         if (raised)
         {
+            mats = GetComponent<Renderer>().materials;
+            mats[0] = defaultGround;
+            GetComponent<Renderer>().materials = mats;
+            raisedTimer++;
             col.isTrigger = false;
+            if (raisedTimer >= raisedLength && raisedTimer < raisedLength * 2)
+            {
+                Vector3.MoveTowards(this.transform.position, defaultPosition, 2 * Time.deltaTime);              
+            }
+            if (raisedTimer >= raisedLength * 2)
+            {
+                raised = false;
+                raisedTimer = 0;
+                this.transform.position = defaultPosition;
+            }
         }
 
 

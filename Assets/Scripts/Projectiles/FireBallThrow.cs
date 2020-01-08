@@ -97,6 +97,11 @@ public class FireBallThrow : MonoBehaviour
 
      void OnTriggerEnter(Collider collision)
     {
+        if (collision.gameObject.tag == "Ground" && rangeCounter > 3)
+        {
+                collision.gameObject.GetComponentInParent<TileBehavoir>().inflamed = true;
+        }
+
         if (playerInt == 1 && collision.gameObject.tag == "Cliffs")
         { 
             playerControl.canCast[spellNum] = true;

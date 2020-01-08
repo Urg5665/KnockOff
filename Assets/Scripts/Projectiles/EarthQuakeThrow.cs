@@ -47,7 +47,10 @@ public class EarthQuakeThrow : MonoBehaviour
     public float lobDec;
     public bool lobShot; // True for meteor
 
+    // for mountain
     public bool destructive; // False for mountain
+    public bool isMountain; //True for first lob, then false for the two that come out after
+
 
     // For meteor
     public bool isMeteor;
@@ -55,6 +58,7 @@ public class EarthQuakeThrow : MonoBehaviour
     public Transform AOEpoint;
     public int aoeWidth;
     public GameObject fireProjectile;
+    public GameObject earthProjectile;
     public int bombRange;
 
     private void Awake()
@@ -105,19 +109,24 @@ public class EarthQuakeThrow : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.gameObject.tag == "Ground" && rangeCounter > 3)
+        if (collision.gameObject.tag == "Ground" )
         {
-            if (destructive)
+            if (destructive && rangeCounter > 3)
             {
-                collision.gameObject.GetComponentInParent<TileBehavoir>().destroyed = true;
+                collision.gameObject.GetComponentInParent<TileBehavoir>().shattered = true;
             }
-            else if (!destructive) // Mountain
+            else if (!destructive && !isMountain) // Mountain
             {
                 collision.gameObject.GetComponentInParent<TileBehavoir>().rising = true;
                 collision.gameObject.GetComponentInParent<TileBehavoir>().risingTimer = 0;
                 collision.gameObject.GetComponentInParent<TileBehavoir>().mountainDir = this.transform.forward;
             }
 
+        }
+        if (collision.gameObject.tag == "Player2" && destructive && !isMeteor)
+        {
+            collision.gameObject.GetComponent<PlayerControlXbox>().stunLength = 60;
+            collision.gameObject.GetComponent<PlayerControlXbox>().maxStunLength = 60;
         }
     }
     private void Start()
@@ -236,6 +245,11 @@ public class EarthQuakeThrow : MonoBehaviour
                     {
                         createBomb(8); // creates 8 firballs that will travel out from meteor
                     }
+                    if (isMountain)
+                    {
+                        createMountainTangent(); // Creates 2 earth projectiles that will rise tiles
+                        Debug.Log("Mounttaingent");
+                    }
                     Destroy(this.gameObject);
                 }
                 playerControl.canCast[spellNum] = true;
@@ -287,6 +301,40 @@ public class EarthQuakeThrow : MonoBehaviour
 
 
     }
+    public void createMountainTangent()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            newSpellAOE[i] = Instantiate(earthProjectile, earthProjectile.transform.position, this.transform.rotation);
+            Debug.Log(newSpellAOE[i].name);
+           
+            //newSpellAOE[i].GetComponent<Transform>().rotation = Quaternion
+            newSpellAOE[i].GetComponent<EarthQuakeThrow>().playerInt = playerInt;
+            newSpellAOE[i].GetComponent<EarthQuakeThrow>().spellNum = spellNum;
+            newSpellAOE[i].GetComponent<EarthQuakeThrow>().maxRange = 10;
+            //newSpellAOE[i].GetComponent<EarthQuakeThrow>().AOEspell = true;;
+            newSpellAOE[i].GetComponent<EarthQuakeThrow>().throwSpeed = 30;
+            newSpellAOE[i].GetComponent<SphereCollider>().radius = 1f;
+            newSpellAOE[i].GetComponent<EarthQuakeThrow>().destructive = false;
+            newSpellAOE[i].GetComponent<EarthQuakeThrow>().isMountain = false;
+            //bombCircle(newSpellAOE[i], i);
+            splitPoints(newSpellAOE[i], i);
+            newSpellAOE[i].GetComponent<EarthQuakeThrow>().transform.LookAt(AOEpoint);
+            newSpellAOE[i].transform.position = new Vector3(newSpellAOE[i].transform.position.x, newSpellAOE[i].transform.position.y , newSpellAOE[i].transform.position.z);
+            print(this.transform.rotation.eulerAngles.y);
+            if (i == 0)
+            {
+                newSpellAOE[i].transform.rotation = Quaternion.Euler(newSpellAOE[i].transform.rotation.x, this.transform.rotation.eulerAngles.y + 90, newSpellAOE[i].transform.rotation.z);
+            }
+            else if (i == 1)
+            {
+                newSpellAOE[i].transform.rotation = Quaternion.Euler(newSpellAOE[i].transform.rotation.x, this.transform.rotation.eulerAngles.y - 90, newSpellAOE[i].transform.rotation.z);
+            }
+
+
+        }
+    }
+
 
     public void createBomb(int L)
     {
@@ -295,24 +343,31 @@ public class EarthQuakeThrow : MonoBehaviour
             newSpellAOE[i] = Instantiate(fireProjectile, this.transform.position, fireProjectile.transform.rotation);
             newSpellAOE[i].GetComponent<FireBallThrow>().playerInt = playerInt;
             newSpellAOE[i].GetComponent<FireBallThrow>().spellNum = spellNum;
-            newSpellAOE[i].GetComponent<FireBallThrow>().maxRange = bombRange;
+            newSpellAOE[i].GetComponent<FireBallThrow>().maxRange = 20;
             newSpellAOE[i].GetComponent<FireBallThrow>().AOEspell = true;
             newSpellAOE[i].GetComponent<FireBallThrow>().fireForce = 700;
             newSpellAOE[i].GetComponent<FireBallThrow>().fireKnockUp = 200;
             newSpellAOE[i].GetComponent<FireBallThrow>().throwSpeed = 40;
             newSpellAOE[i].GetComponent<FireBallThrow>().isMeteor = true;
-            newSpellAOE[i].GetComponent<SphereCollider>().radius = 3f;
+            newSpellAOE[i].GetComponent<SphereCollider>().radius = 1f;
             bombCircle(newSpellAOE[i], i);
             newSpellAOE[i].GetComponent<FireBallThrow>().transform.LookAt(AOEpoint);
             newSpellAOE[i].transform.position = new Vector3(newSpellAOE[i].transform.position.x, newSpellAOE[i].transform.position.y + 1f, newSpellAOE[i].transform.position.z);
         }
     }
+    public void splitPoints(GameObject parent,int i)
+    {
+        AOEpoint.position = parent.transform.position;
+        float ang = 180 * (i) + (parent.transform.rotation.y);
+        float radius = .1f;
+        AOEpoint.position = new Vector3(parent.transform.position.x + (radius * Mathf.Sin(ang * Mathf.Deg2Rad)), this.transform.position.y, parent.transform.position.z + (radius * Mathf.Cos(ang * Mathf.Deg2Rad)));
 
+    }
     public void bombCircle(GameObject parent, int i)
     {
         AOEpoint.position = parent.transform.position;
         float ang = 45 * i;
-        float radius = 10;
+        float radius = .1f;
         AOEpoint.position = new Vector3(AOEpoint.transform.position.x + (radius * Mathf.Sin(ang * Mathf.Deg2Rad)), this.transform.position.y, AOEpoint.transform.position.z + (radius * Mathf.Cos(ang * Mathf.Deg2Rad)));
         //Debug.Log(i + ":" + AOEpoint.position);
         //AOEpoint.position 

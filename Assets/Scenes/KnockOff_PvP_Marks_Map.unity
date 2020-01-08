@@ -30951,6 +30951,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WaterProDaytime
       objectReference: {fileID: 0}
+    - target: {fileID: 2042960654, guid: 8e1c7bafb995dfc47942efa84618ff19, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 422371095, guid: 8e1c7bafb995dfc47942efa84618ff19, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9.6147
@@ -33733,7 +33737,7 @@ PrefabInstance:
     - target: {fileID: 46870567241696049, guid: 0f9ffe8302123f5419638698ccf5218d,
         type: 3}
       propertyPath: usingTriad
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 46870567241696049, guid: 0f9ffe8302123f5419638698ccf5218d,
         type: 3}
@@ -33748,7 +33752,7 @@ PrefabInstance:
     - target: {fileID: 1806060109347475975, guid: 0f9ffe8302123f5419638698ccf5218d,
         type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 4053079160233763259, guid: 0f9ffe8302123f5419638698ccf5218d,
         type: 3}
@@ -34017,12 +34021,12 @@ PrefabInstance:
     - target: {fileID: 4017913382014216252, guid: 0f9ffe8302123f5419638698ccf5218d,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8941140668277223203, guid: 0f9ffe8302123f5419638698ccf5218d,
         type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 6311237299059648094, guid: 0f9ffe8302123f5419638698ccf5218d,
         type: 3}
@@ -34092,6 +34096,26 @@ PrefabInstance:
         type: 3}
       propertyPath: localDirection
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2363115426779217055, guid: 0f9ffe8302123f5419638698ccf5218d,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1666048077354206930, guid: 0f9ffe8302123f5419638698ccf5218d,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2969741558989732489, guid: 0f9ffe8302123f5419638698ccf5218d,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4260019372372124269, guid: 0f9ffe8302123f5419638698ccf5218d,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7296928951327075431, guid: 0f9ffe8302123f5419638698ccf5218d, type: 3}
@@ -53663,6 +53687,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: DeathPlane
+      objectReference: {fileID: 0}
+    - target: {fileID: 3421601605809579328, guid: 07c346095a9b1d9439eace2211f91786,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3421601605809579356, guid: 07c346095a9b1d9439eace2211f91786,
         type: 3}

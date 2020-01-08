@@ -24524,6 +24524,7 @@ MonoBehaviour:
   lobDec: 0
   lobShot: 0
   destructive: 0
+  isMountain: 0
   isMeteor: 0
   newSpellAOE:
   - {fileID: 0}
@@ -24538,7 +24539,8 @@ MonoBehaviour:
   aoeWidth: 0
   fireProjectile: {fileID: 6028110825913185461, guid: 646fbf5c65e39244db59d4cb70051a28,
     type: 3}
-  aoeRange: 0
+  earthProjectile: {fileID: 7346371536267834907}
+  bombRange: 0
 --- !u!54 &6230505840896424009
 Rigidbody:
   m_ObjectHideFlags: 0

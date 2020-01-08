@@ -92,10 +92,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d451857a2b4161488dc7221f87e0750, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultPosition: {x: 0, y: 0, z: 0}
+  defaultGround: {fileID: 2100000, guid: e6d30b3dfb3ea6544b3de23cf70765cf, type: 2}
+  fireGround: {fileID: 2100000, guid: 6ba7ac0aacaade24aa1b4f1c798be222, type: 2}
+  mats: []
+  shattered: 0
+  shatterTime: 0
+  shatterLength: 0
+  magnitude: 0
   destroyed: 0
   destroyTimer: 0
   destroyLength: 0
+  inflamed: 0
+  inflamedTime: 0
+  inflamedLength: 0
   raised: 0
+  rising: 0
+  risingTimer: 0
+  risingLength: 0
   raisedTimer: 0
   raisedLength: 0
   mesh: {fileID: 0}
@@ -103,6 +117,7 @@ MonoBehaviour:
   player1Score: 0
   player2Score: 0
   deathPlane: {fileID: 0}
+  mountainDir: {x: 0, y: 0, z: 0}
 --- !u!64 &3741366310339446784
 MeshCollider:
   m_ObjectHideFlags: 0
