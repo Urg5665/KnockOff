@@ -228,6 +228,14 @@ public class SkillShotRotate : MonoBehaviour
                 mountainSkillShot.SetActive(true);
 
             }
+            if (playerControl.spellPrimary[playerControl.spellSelected] == "Water") // aaplies base spell ccolor
+            {
+                cardSkillShot.GetComponent<Image>().color = Color.blue;
+                aoeSkillShot.GetComponent<Image>().color = Color.blue;
+                rangeSkillShot.GetComponent<Image>().color = Color.blue;
+                dashSkillShot.GetComponent<Image>().color = Color.blue;
+                boomSkillShot.GetComponent<Image>().color = Color.blue;
+            }
             /*
             if (playerControl.spellPrimary[playerControl.spellSelected] == "Wind") // aaplies base spell and color
             {
@@ -237,14 +245,7 @@ public class SkillShotRotate : MonoBehaviour
             dashSkillShot.GetComponent<Image>().color = new Color32(67, 215, 255, 255);
             boomSkillShot.GetComponent<Image>().color = new Color32(67, 215, 255, 255);
             }
-            if (playerControl.spellPrimary[playerControl.spellSelected] == "Water") // aaplies base spell ccolor
-            {
-            cardSkillShot.GetComponent<Image>().color = Color.blue;
-            aoeSkillShot.GetComponent<Image>().color = Color.blue;
-            rangeSkillShot.GetComponent<Image>().color = Color.blue;
-            dashSkillShot.GetComponent<Image>().color = Color.blue;
-            boomSkillShot.GetComponent<Image>().color = Color.blue;
-            }
+
 
             if (playerControl.spellSecondary[playerControl.spellSelected] == "Range")
             {

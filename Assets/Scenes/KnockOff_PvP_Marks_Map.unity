@@ -33749,6 +33749,11 @@ PrefabInstance:
       propertyPath: playerUITriad
       value: 
       objectReference: {fileID: 1188628263}
+    - target: {fileID: 46870567241696049, guid: 0f9ffe8302123f5419638698ccf5218d,
+        type: 3}
+      propertyPath: inflamedEffect
+      value: 
+      objectReference: {fileID: 1505483266}
     - target: {fileID: 1806060109347475975, guid: 0f9ffe8302123f5419638698ccf5218d,
         type: 3}
       propertyPath: m_RootOrder
@@ -36244,6 +36249,12 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &1505483266 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 649923764403391346, guid: 0f9ffe8302123f5419638698ccf5218d,
+    type: 3}
+  m_PrefabInstance: {fileID: 1438511504}
+  m_PrefabAsset: {fileID: 0}
 --- !u!43 &1511192676
 Mesh:
   m_ObjectHideFlags: 0

@@ -130,7 +130,7 @@ public class CameraMove : MonoBehaviour
         */
 
         if (Input.GetKeyDown(KeyCode.G)){
-            StartCoroutine(Shake(.15f, .4f));
+            //StartCoroutine(Shake(.15f, .4f));
         } 
 
         if ( player1Hit || player2Hit)

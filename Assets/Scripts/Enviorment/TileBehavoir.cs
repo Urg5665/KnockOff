@@ -75,7 +75,7 @@ public class TileBehavoir : MonoBehaviour
     {
         if (collision.gameObject.tag == "earthQuake")
         {
-            Debug.Log(this.gameObject.name + " was Destroyed");
+            //Debug.Log(this.gameObject.name + " was Destroyed");
             //destroyed = true;
         }
     }
@@ -88,6 +88,7 @@ public class TileBehavoir : MonoBehaviour
 
             destroyed = false;
             raised = false;
+            inflamed = false;
             this.transform.position = new Vector3(transform.position.x, 0f, transform.position.z);
             col.enabled = true;
             mesh.enabled = true;

@@ -98,6 +98,10 @@ public class PlayerControlXbox : MonoBehaviour
 
     public GameObject risingMountain; // To have a single mountain tile apply the force to 1 player, instead of adding 
 
+    public bool inflamed;
+    public int inflamedTime;
+    public int inflamedLength;
+
     void Start()
     {
         Cursor.lockState = CursorLockMode.None;
@@ -128,7 +132,9 @@ public class PlayerControlXbox : MonoBehaviour
         dashSpellRange = 15; // should be very close
 
         stunLength = 0;
-
+        inflamed = false;
+        inflamedTime = 0;
+        inflamedLength = 50;
         for (int i = 0; i < 4; i++)
         {
             canCast[i] = true;
@@ -188,6 +194,26 @@ public class PlayerControlXbox : MonoBehaviour
         //speed = maxSpeed - (slowDownPerCard * cardsThrown); // apply slow for each card in play
         //Debug.Log("speed" + speed);
 
+        if (inflamedTime > 0)
+        {
+            //Debug.Log("Player2 Stunned");
+            if (dashing)
+            {
+                print("Hit While Dashing");
+            }
+            dashing = false;
+            dashingTime = 0;
+            inflamedTime--;
+            onPlayerText.text = "" + inflamedTime;
+            //print("Inflaming Left:" + inflamedTime);
+            onPlayerStunRing.enabled = true;
+            onPlayerStunRing.fillAmount = (float)stunLength / inflamedLength;
+        }
+        else if (inflamedTime >= 0)
+        {
+            onPlayerStunRing.enabled = false;
+            inflamed = false;
+        }
         if (stunLength > 0)
         {
             //Debug.Log("Player2 Stunned");
@@ -202,7 +228,7 @@ public class PlayerControlXbox : MonoBehaviour
             onPlayerStunRing.enabled = true;
             onPlayerStunRing.fillAmount = (float)stunLength/maxStunLength;
         }
-        if (stunLength == 0)
+        else if (stunLength == 0 && !inflamed)
         {
             speed = 10.0f;
             onPlayerText.text = "";
@@ -475,6 +501,20 @@ public class PlayerControlXbox : MonoBehaviour
         }
 
     }
+    public void OnTriggerStay(Collider collision)
+    {
+        if (collision.gameObject.tag == "Ground")
+        {
+            if (collision.gameObject.GetComponentInParent<TileBehavoir>().inflamed == true)
+            {
+                finishDash();
+                inflamed = true;
+                inflamedTime = 50;
+                print("Standing on flames");
+            }
+
+        }
+    }
     public void OnTriggerEnter(Collider collision)
     {
         if (collision.gameObject.tag == "Card" && collision.GetComponent<CardThrow>().rangeCounter > collision.GetComponent<CardThrow>().maxRange)
@@ -499,6 +539,13 @@ public class PlayerControlXbox : MonoBehaviour
 
 
 
+            }
+            if (collision.gameObject.GetComponentInParent<TileBehavoir>().inflamed == true)
+            {
+                finishDash();
+                inflamed = true;
+                inflamedTime = 50;
+                print("Standing on flames");
             }
 
             else

@@ -102,22 +102,8 @@ public class FireBallThrow : MonoBehaviour
                 collision.gameObject.GetComponentInParent<TileBehavoir>().inflamed = true;
         }
 
-        if (playerInt == 1 && collision.gameObject.tag == "Cliffs")
+        if (collision.gameObject.tag == "Cliffs")
         { 
-            playerControl.canCast[spellNum] = true;
-            playerControl.spellPrimary[spellNum] = "";
-            playerControl.spellSecondary[spellNum] = ""; // Reset Spell to empty
-
-            hitEffectInGame = Instantiate(hitEffect);
-            hitEffectInGame.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
-            Destroy(this.gameObject);
-        }
-        if (playerInt == 2 && collision.gameObject.tag == "Cliffs")
-        {
-            playerControlXbox.canCast[spellNum] = true;
-            playerControlXbox.spellPrimary[spellNum] = "";
-            playerControlXbox.spellSecondary[spellNum] = ""; // Reset Spell to empty
-
             hitEffectInGame = Instantiate(hitEffect);
             hitEffectInGame.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
             Destroy(this.gameObject);
@@ -127,9 +113,6 @@ public class FireBallThrow : MonoBehaviour
             //print(collision.gameObject.name);
             if (collision.gameObject.GetComponentInParent<TileBehavoir>().raised == true)
             {
-                playerControl.canCast[spellNum] = true;
-                playerControl.spellPrimary[spellNum] = "";
-                playerControl.spellSecondary[spellNum] = ""; // Reset Spell to empty
 
                 hitEffectInGame = Instantiate(hitEffect);
                 hitEffectInGame.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
@@ -144,9 +127,6 @@ public class FireBallThrow : MonoBehaviour
         {
             if (collision.gameObject.GetComponentInParent<TileBehavoir>().raised == true)
             {
-                playerControlXbox.canCast[spellNum] = true;
-                playerControlXbox.spellPrimary[spellNum] = "";
-                playerControlXbox.spellSecondary[spellNum] = ""; // Reset Spell to empty
 
                 hitEffectInGame = Instantiate(hitEffect);
                 hitEffectInGame.transform.position = new Vector3(this.transform.position.x, this.transform.position.y + 1, this.transform.position.z);
@@ -173,10 +153,22 @@ public class FireBallThrow : MonoBehaviour
                 collision.gameObject.GetComponent<Rigidbody>().velocity = new Vector3(0f, 0f, 0f);
                 collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * fireForce); // Knock Back
                 //Debug.Log(this.gameObject.transform.forward);
-                if ((collision.gameObject.GetComponent<PlayerControlXbox>().stunLength > 0))
+
+                if ((collision.gameObject.GetComponent<PlayerControlXbox>().inflamed == true))
                 {
-                    collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * fireForce / 2); // Double If Stuned
+                    collision.gameObject.GetComponent<Rigidbody>().AddForce(this.gameObject.transform.forward * fireForce / 2);
+                    collision.gameObject.GetComponent<PlayerControlXbox>().inflamed = true;
+                    collision.gameObject.GetComponent<PlayerControlXbox>().inflamedTime = 100;
+                    collision.gameObject.GetComponent<PlayerControlXbox>().inflamedLength = 100;
                 }
+                else
+                {
+                    collision.gameObject.GetComponent<PlayerControlXbox>().inflamed = true;
+                    collision.gameObject.GetComponent<PlayerControlXbox>().inflamedTime = 50;
+                    collision.gameObject.GetComponent<PlayerControlXbox>().inflamedLength = 50;
+                }                
+
+
                 if (!isInferno)
                 {
                     collision.gameObject.GetComponent<Rigidbody>().AddForce(Vector3.up * fireKnockUp); // Knock Up
@@ -192,7 +184,7 @@ public class FireBallThrow : MonoBehaviour
                 }
                 hitPlayer = true;
                 hitSlow = 0;
-                StartCoroutine(cameraMove.Shake(.15f, .5f));
+                //StartCoroutine(cameraMove.Shake(.15f, .5f));
                 //cameraMove.player2Hit = true;
                 hitEffectInGame = Instantiate(hitEffect);
                 //hitEffectInGame.transform.position = this.transform.position;
@@ -220,7 +212,7 @@ public class FireBallThrow : MonoBehaviour
                 }
                 hitPlayer = true;
                 hitSlow = 0;
-                StartCoroutine(cameraMove.Shake(.15f, .5f));
+                //StartCoroutine(cameraMove.Shake(.15f, .5f));
                 //cameraMove.player2Hit = true;
                 hitEffectInGame = Instantiate(hitEffect);
                 //hitEffectInGame.transform.position = this.transform.position;
@@ -251,7 +243,7 @@ public class FireBallThrow : MonoBehaviour
                 playerControlXbox.spellSecondary[spellNum] = ""; // Reset Spell to empty
             }
             hitSlow = 0;
-            StartCoroutine(cameraMove.Shake(.15f, .5f));
+            //StartCoroutine(cameraMove.Shake(.15f, .5f));
             //cameraMove.player1Hit = true;
             hitEffectInGame = Instantiate(hitEffect);
             //hitEffectInGame.transform.position = this.transform.position;

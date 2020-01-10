@@ -142,7 +142,7 @@ public class WaterPullThrow : MonoBehaviour
             }
 
             hitSlow = 0;
-            StartCoroutine(cameraMove.Shake(.15f, .5f));
+            //StartCoroutine(cameraMove.Shake(.15f, .5f));
             //cameraMove.player2Hit = true;
             hitEffectInGame = Instantiate(hitEffect);
             //hitEffectInGame.transform.position = this.transform.position;
@@ -169,7 +169,7 @@ public class WaterPullThrow : MonoBehaviour
                 playerControlXbox.spellSecondary[spellNum] = ""; // Reset Spell to empty
             }
             hitSlow = 0;
-            StartCoroutine(cameraMove.Shake(.15f, .5f));
+            //StartCoroutine(cameraMove.Shake(.15f, .5f));
             //cameraMove.player1Hit = true;
             hitEffectInGame = Instantiate(hitEffect);
             //hitEffectInGame.transform.position = this.transform.position;

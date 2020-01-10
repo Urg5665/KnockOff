@@ -20,6 +20,7 @@ public class PlayerControl : MonoBehaviour
 
     public int playerNum;
     public float speed;
+    public float defaultSpeed;
     //public float maxSpeed = 10;
 
     public Transform movement;
@@ -29,7 +30,7 @@ public class PlayerControl : MonoBehaviour
     public bool touchingWall;
     public int timeSinceWalled;
 
-    public GameObject[] spellProjectile; // The actual Fireball, air block, earth wall
+    public GameObject[] spellProjectile; // The actual Fire, water, earth prefab
     public int spellSelected;
     public bool[] canCast;
 
@@ -119,6 +120,11 @@ public class PlayerControl : MonoBehaviour
 
     public bool canSwapSpells;
 
+    public bool inflamed;
+    public int inflamedTime;
+    public int inflamedLength;
+    public GameObject inflamedEffect;
+
 
     void Start()
     {
@@ -128,7 +134,8 @@ public class PlayerControl : MonoBehaviour
         cardsThrown = 0;
         canCast = new bool[4]; // ignore zero here
         //onPlayerUIButton = new GameObject[4];
-        speed = 10.0f;
+        speed = 8.5f;
+        defaultSpeed = speed;
         waterDashForceUp = 0;
         dashDirectionTime = 0;
         dashing = false;
@@ -154,8 +161,11 @@ public class PlayerControl : MonoBehaviour
         pickUIStyle();
         dashCharges = 1;
         dashChargeTime = 0;
-        dashChargeLength = 500;
+        dashChargeLength = 300;
         dashRecovered = false;
+        inflamed = false;
+        inflamedTime = 0;
+        inflamedLength = 50;
         for (int i = 0; i < 4; i++)
         {
             canCast[i] = true;
@@ -211,13 +221,13 @@ public class PlayerControl : MonoBehaviour
             }
             infernoCast--;
             canRotate = false;
-            speed = 6.0f;
+            speed = defaultSpeed * 0.6f;
 
         }
         if (infernoCast == 0)
         {
             canRotate = true;
-            speed = 10.0f;
+            speed = defaultSpeed;
         }
 
 
@@ -236,11 +246,35 @@ public class PlayerControl : MonoBehaviour
 
         //speed = maxSpeed - (slowDownPerCard * cardsThrown); // apply slow for each card in play
         //Debug.Log("speed" + speed);
-
+        //print(grounded);
         if (Input.GetKeyDown(KeyCode.G))
         {
             this.GetComponent<Rigidbody>().AddForce(Vector3.left * 600);
             this.GetComponent<Rigidbody>().AddForce(Vector3.up * 400);
+        }
+        if (inflamed)
+        {
+            if (inflamedTime > 0)
+            {
+                //Debug.Log("Player2 Stunned");
+                if (dashing)
+                {
+                    print("Hit While Dashing");
+                }
+                dashing = false;
+                dashingTime = 0;
+                inflamedTime--;
+                onPlayerText.text = "" + inflamedTime;
+                //print("Inflaming Left:" + inflamedTime);
+                onPlayerStunRing.enabled = true;
+                onPlayerStunRing.fillAmount = (float)stunLength / inflamedLength;
+            }
+            else if (inflamedTime >= 0)
+            {
+                onPlayerStunRing.enabled = false;
+                inflamed = false;
+                inflamedEffect.SetActive(false);
+            }
         }
 
         if (stunLength > 0)
@@ -264,7 +298,7 @@ public class PlayerControl : MonoBehaviour
             {
                 dashCharges++;
                 dashChargeTime = 0;
-                print(dashCharges);
+                //print(dashCharges);
             }
             //onPlayerDashCooldownRing.fillAmount = ((float)dashChargeTime/dashChargeLength);
         }
@@ -291,7 +325,7 @@ public class PlayerControl : MonoBehaviour
         {
             if (dashingTime == 0)
             {
-                speed = 10.0f;
+                speed = defaultSpeed;
                 onPlayerText.text = "";
                 stunLength = 0;
             }
@@ -395,6 +429,14 @@ public class PlayerControl : MonoBehaviour
             {
                 finishDash();
             }
+            if (collision.gameObject.GetComponentInParent<TileBehavoir>().inflamed == true)
+            {
+                finishDash();
+                inflamed = true;
+                inflamedTime = 50;
+                inflamedEffect.SetActive(true);
+                print("Standing on flames");
+            }
         }
         if (collision.gameObject.tag == "Cliffs")
         {
@@ -446,7 +488,11 @@ public class PlayerControl : MonoBehaviour
         }
         if (collision.gameObject.tag == "waterRes")
         {
-
+            if (spellPrimary[spellSelected] == "")
+            {
+                spellPrimary[spellSelected] = "Water";
+                Destroy(collision.gameObject);
+            }
         }
 
     }
@@ -500,7 +546,7 @@ public class PlayerControl : MonoBehaviour
             newSpell.transform.position = new Vector3(newSpell.transform.position.x, newSpell.transform.position.y - .25f, newSpell.transform.position.z);
             newSpell.GetComponent<FireBallThrow>().spellNum = spellSelected;
             //Debug.Log("Basic");
-            newSpell.GetComponent<FireBallThrow>().maxRange = baseRange;
+            newSpell.GetComponent<FireBallThrow>().maxRange = baseRange * 2;
             canCast[spellSelected] = false;
             fireBallID++;
             newSpell.GetComponent<FireBallThrow>().fireBallID = fireBallID;
@@ -508,6 +554,9 @@ public class PlayerControl : MonoBehaviour
             newSpell.GetComponent<FireBallThrow>().fireKnockUp = 200;
             newSpell.GetComponent<FireBallThrow>().throwSpeed = 60;
             newSpell.GetComponent<FireBallThrow>().isMeteor = false;
+            spellPrimary[spellSelected] = "";
+            spellSecondary[spellSelected] = "";
+            canCast[spellSelected] = true;
 
             //print("FireballID:" + newSpell.GetComponent<FireBallThrow>().fireBallID);
         }
@@ -837,6 +886,9 @@ this.GetComponent<BoxCollider>().isTrigger = true;
             canCast[spellSelected] = false;
             newSpell.GetComponent<EarthQuakeThrow>().destructive = true;
             newSpell.GetComponent<EarthQuakeThrow>().throwSpeed = 60;
+            spellPrimary[spellSelected] = "";
+            spellSecondary[spellSelected] = "";
+            canCast[spellSelected] = true;
         }
         if (spellPrimary[spellSelected] == "Meteor")
         {
@@ -852,6 +904,9 @@ this.GetComponent<BoxCollider>().isTrigger = true;
             newSpell.GetComponent<EarthQuakeThrow>().lobSpeed = 40;
             newSpell.GetComponent<EarthQuakeThrow>().lobDec = 2;
             newSpell.GetComponent<EarthQuakeThrow>().isMeteor = true;
+            spellPrimary[spellSelected] = "";
+            spellSecondary[spellSelected] = "";
+            canCast[spellSelected] = true;
         }
         if (spellPrimary[spellSelected] == "Mountain")
         {
@@ -867,6 +922,9 @@ this.GetComponent<BoxCollider>().isTrigger = true;
             newSpell.GetComponent<EarthQuakeThrow>().lobSpeed = 40;
             newSpell.GetComponent<EarthQuakeThrow>().lobDec = 4;
             newSpell.GetComponent<EarthQuakeThrow>().isMountain = true;
+            spellPrimary[spellSelected] = "";
+            spellSecondary[spellSelected] = "";
+            canCast[spellSelected] = true;
             /*
             for (int i = 0; i < 5; i++)
             {
@@ -1272,7 +1330,7 @@ this.GetComponent<BoxCollider>().isTrigger = true;
         {
             rotateSpellChannel = 0;
             rotateSpellRing.fillAmount = 0;
-            speed = 10.0f;
+            speed = defaultSpeed;
             canSwapSpells = true;
             for (int i = 0; i < 4; i++)
             {
@@ -1351,7 +1409,7 @@ this.GetComponent<BoxCollider>().isTrigger = true;
         {
             if (this.transform.position.y < 2.5 & dashCharges < 2)
             {
-                print("Not Enough dashes! " + dashCharges);
+                //print("Not Enough dashes! " + dashCharges);
             }
             else
             {
@@ -1363,7 +1421,7 @@ this.GetComponent<BoxCollider>().isTrigger = true;
                 dashDirectionTime = 75;
                 transform.LookAt(dashAim);
                 baseDashing = true;
-                print(dashCharges);
+                //print(dashCharges);
             }
 
 

@@ -125,8 +125,21 @@ public class EarthQuakeThrow : MonoBehaviour
         }
         if (collision.gameObject.tag == "Player2" && destructive && !isMeteor)
         {
-            collision.gameObject.GetComponent<PlayerControlXbox>().stunLength = 60;
-            collision.gameObject.GetComponent<PlayerControlXbox>().maxStunLength = 60;
+            if (collision.gameObject.GetComponent<PlayerControlXbox>().inflamed == true)
+            {
+                collision.gameObject.GetComponent<PlayerControlXbox>().stunLength = 100;
+                collision.gameObject.GetComponent<PlayerControlXbox>().maxStunLength = 100;
+                print("inflamed Consumed");
+                collision.gameObject.GetComponent<PlayerControlXbox>().inflamedTime = 0;
+                collision.gameObject.GetComponent<PlayerControlXbox>().inflamed = false;
+
+            }
+            else
+            {
+                collision.gameObject.GetComponent<PlayerControlXbox>().stunLength = 50;
+                collision.gameObject.GetComponent<PlayerControlXbox>().maxStunLength = 50;
+            }
+
         }
     }
     private void Start()
@@ -252,9 +265,11 @@ public class EarthQuakeThrow : MonoBehaviour
                     }
                     Destroy(this.gameObject);
                 }
+                /*
                 playerControl.canCast[spellNum] = true;
                 playerControl.spellPrimary[spellNum] = "";
                 playerControl.spellSecondary[spellNum] = ""; // Reset Spell to empty
+                */
             }
             if (playerInt == 2)
             {
@@ -270,9 +285,11 @@ public class EarthQuakeThrow : MonoBehaviour
                     }
                     Destroy(this.gameObject);
                 }
+                /*
                 playerControlXbox.canCast[spellNum] = true;
                 playerControlXbox.spellPrimary[spellNum] = "";
                 playerControlXbox.spellSecondary[spellNum] = ""; // Reset Spell to empty
+                */
             }
         }
         if (boomHover)
